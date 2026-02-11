@@ -366,6 +366,21 @@ def scan_shape(ticker: str) -> Optional[Dict]:
     max_dd, peak_i, trough_i = max_drawdown_pct(window["Close"])
     if max_dd < MIN_MAX_DRAWDOWN_PCT:
         return None
+        # --- NEW: 必须是“深跌后修复”，而不是趋势股 ---
+    # 低点(trough)必须发生在窗口的前60%（避免近期才创新低的票）
+    if trough_i > int(len(window) * 0.6):
+        return None
+
+    # 最近200天不能再创新低：必须已经止跌并抬升
+    recent_min = safe_float(df.tail(200)["Low"].min())
+    window_min = safe_float(window["Low"].min())
+
+    if recent_min is None or window_min is None:
+        return None
+
+    # 允许2%误差（避免因为一点点影线误杀）
+    if recent_min < window_min * 0.98:
+        return None
 
     trough_close = safe_float(window["Close"].iloc[trough_i])
     if trough_close is None or trough_close <= 0:

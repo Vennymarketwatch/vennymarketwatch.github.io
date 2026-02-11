@@ -1,7 +1,7 @@
 {
-  "updated_utc": "2026-02-11 20:46:35 UTC",
+  "updated_utc": "2026-02-11 21:02:24 UTC",
   "universe_size": 2586,
-  "found": 9,
+  "found": 8,
   "failed": 0,
   "params": {
     "DROP_LOOKBACK": 500,
@@ -29,17 +29,6 @@
       "base_range_pct": 28.06,
       "dollar_vol": 115831860,
       "marketCap": 10048432128
-    },
-    {
-      "ticker": "AES",
-      "close": 16.45,
-      "prior_high_50d": 16.45,
-      "ma250": 12.74,
-      "ma20": 15.04,
-      "max_drawdown_pct": 55.76,
-      "base_range_pct": 23.92,
-      "dollar_vol": 89166518,
-      "marketCap": 11717950464
     },
     {
       "ticker": "ELAN",

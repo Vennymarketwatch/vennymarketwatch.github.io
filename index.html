@@ -3,6 +3,7 @@
 <head>
 <title>Market Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
 body {
 font-family: Arial;
@@ -16,6 +17,29 @@ color: #00ffcc;
 .section {
 margin: 40px;
 }
+.macro-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:16px;
+}
+.macro-card{
+background:#1b1b1b;
+padding:18px;
+border-radius:12px;
+}
+.macro-title{
+font-size:14px;
+color:#aaa;
+}
+.macro-value{
+font-size:34px;
+color:#00ffcc;
+font-weight:bold;
+}
+.macro-sub{
+font-size:12px;
+color:#888;
+}
 </style>
 </head>
 
@@ -24,52 +48,40 @@ margin: 40px;
 <h1>Market Dashboard</h1>
 
 <div class="section">
-<h2>Live Ticker</h2>
-<script src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js">
-{
-"symbols": [
-{"proName": "NASDAQ:NVDA"},
-{"proName": "NASDAQ:AAPL"},
-{"proName": "NASDAQ:TSLA"},
-{"proName": "SP:SPX"},
-{"proName": "NASDAQ:QQQ"}
-],
-"showSymbolLogo": true,
-"isTransparent": false,
-"displayMode": "adaptive"
-}
-</script>
+<h2>Macro Snapshot</h2>
+
+<div class="macro-grid">
+<div class="macro-card">
+<div class="macro-title">Fed Funds Rate</div>
+<div class="macro-value" id="fedfundsValue">Loading…</div>
+<div class="macro-sub" id="fedfundsDate"></div>
 </div>
 
-<div class="section">
-<h2>Chart</h2>
-<script src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js">
-{
-"symbol": "NASDAQ:NVDA",
-"width": "100%",
-"height": "500",
-"theme": "dark",
-"style": "1"
-}
-</script>
+<div class="macro-card">
+<div class="macro-title">US CPI</div>
+<div class="macro-value" id="cpiValue">Loading…</div>
+<div class="macro-sub" id="cpiDate"></div>
+</div>
+</div>
 </div>
 
-<div class="section">
-<h2>Market Heatmap</h2>
-<script src="https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js">
-{
-"dataSource": "SPX500",
-"blockSize": "market_cap_basic",
-"blockColor": "change",
-"theme": "dark"
-}
-</script>
-</div>
+<script>
+const FRED_API_KEY="5528eb633fd71ac2cdff279205b7064b";
 
-<div class="section">
-<h2>Financial News</h2>
-<iframe src="https://finance.yahoo.com" width="100%" height="600"></iframe>
-</div>
+async function getFred(series,idValue,idDate,percent=false){
+const url=`https://api.stlouisfed.org/fred/series/observations?series_id=${series}&api_key=${FRED_API_KEY}&file_type=json&sort_order=desc&limit=1`;
+const res=await fetch(url);
+const data=await res.json();
+const obs=data.observations[0];
+let val=parseFloat(obs.value);
+document.getElementById(idValue).textContent=
+percent?val.toFixed(2)+"%":val.toFixed(1);
+document.getElementById(idDate).textContent="Latest: "+obs.date;
+}
+
+getFred("FEDFUNDS","fedfundsValue","fedfundsDate",true);
+getFred("CPIAUCSL","cpiValue","cpiDate",false);
+</script>
 
 </body>
 </html>

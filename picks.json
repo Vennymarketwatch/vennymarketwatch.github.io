@@ -1,7 +1,7 @@
 {
-  "updated_utc": "2026-02-11 21:02:24 UTC",
+  "updated_utc": "2026-02-11 21:07:13 UTC",
   "universe_size": 2586,
-  "found": 8,
+  "found": 5,
   "failed": 0,
   "params": {
     "DROP_LOOKBACK": 500,
@@ -29,17 +29,6 @@
       "base_range_pct": 28.06,
       "dollar_vol": 115831860,
       "marketCap": 10048432128
-    },
-    {
-      "ticker": "ELAN",
-      "close": 25.81,
-      "prior_high_50d": 25.81,
-      "ma250": 16.86,
-      "ma20": 24.59,
-      "max_drawdown_pct": 56.1,
-      "base_range_pct": 25.33,
-      "dollar_vol": 68062568,
-      "marketCap": 12824046592
     },
     {
       "ticker": "ST",
@@ -73,28 +62,6 @@
       "base_range_pct": 27.9,
       "dollar_vol": 27036093,
       "marketCap": 4820290048
-    },
-    {
-      "ticker": "GL",
-      "close": 144.37,
-      "prior_high_50d": 146.95,
-      "ma250": 131.37,
-      "ma20": 140.95,
-      "max_drawdown_pct": 61.71,
-      "base_range_pct": 18.12,
-      "dollar_vol": 28595220,
-      "marketCap": 11694480384
-    },
-    {
-      "ticker": "IONS",
-      "close": 83.61,
-      "prior_high_50d": 86.5,
-      "ma250": 53.18,
-      "ma20": 81.92,
-      "max_drawdown_pct": 50.81,
-      "base_range_pct": 25.32,
-      "dollar_vol": 38747967,
-      "marketCap": 13542679552
     },
     {
       "ticker": "GME",

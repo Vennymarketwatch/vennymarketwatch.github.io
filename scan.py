@@ -397,6 +397,15 @@ def scan_shape(ticker: str) -> Optional[Dict]:
         return None
     if close_last <= ma250_last:
         return None
+        # --- NEW: MA250 上穿必须发生在最近120天内（突破后盘整模型）---
+    recent = df.tail(120).copy()
+    ma250_recent = ma250.tail(120)
+
+    cross_up = ((recent["Close"].shift(1) < ma250_recent.shift(1)) &
+                (recent["Close"] > ma250_recent)).any()
+
+    if not cross_up:
+        return None
 
     # 4) Base tightness over last BASE_BARS
     base = df.tail(BASE_BARS).copy()

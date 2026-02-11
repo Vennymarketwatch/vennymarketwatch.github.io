@@ -34,6 +34,118 @@ margin-bottom:20px;
 <body>
 
 <h1>Market Dashboard</h1>
+  <div class="section" style="text-align:left;">
+  <h2 style="text-align:center;">My Template Picks</h2>
+
+  <div id="picksMeta" style="color:#aaa; font-size:13px; text-align:center; margin-bottom:12px;">
+    Loading picks.json…
+  </div>
+
+  <div style="overflow:auto; border:1px solid #222; border-radius:12px;">
+    <table style="width:100%; border-collapse:collapse; min-width:760px;">
+      <thead>
+        <tr style="background:#111;">
+          <th style="padding:12px; text-align:left; border-bottom:1px solid #222;">Ticker</th>
+          <th style="padding:12px; text-align:right; border-bottom:1px solid #222;">Price</th>
+          <th style="padding:12px; text-align:right; border-bottom:1px solid #222;">500d Drop</th>
+          <th style="padding:12px; text-align:right; border-bottom:1px solid #222;">Distance to 80d High</th>
+          <th style="padding:12px; text-align:right; border-bottom:1px solid #222;">80d Base Height</th>
+          <th style="padding:12px; text-align:right; border-bottom:1px solid #222;">MA250</th>
+        </tr>
+      </thead>
+      <tbody id="picksBody">
+        <tr>
+          <td colspan="6" style="padding:14px; color:#888;">Loading…</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="color:#777; font-size:12px; margin-top:10px; line-height:1.5;">
+    Tip: Click a ticker to open TradingView chart in a new tab.
+  </div>
+</div>
+
+<script>
+  function fmt(n, digits=2) {
+    if (n === null || n === undefined || Number.isNaN(n)) return "—";
+    return Number(n).toFixed(digits);
+  }
+  function pct(n, digits=1) {
+    if (n === null || n === undefined || Number.isNaN(n)) return "—";
+    return Number(n).toFixed(digits) + "%";
+  }
+  function safeNum(x) {
+    const v = Number(x);
+    return Number.isFinite(v) ? v : null;
+  }
+
+  async function loadPicks() {
+    const metaEl = document.getElementById("picksMeta");
+    const bodyEl = document.getElementById("picksBody");
+
+    try {
+      const res = await fetch("picks.json?v=" + Date.now(), { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+
+      const updated = data.updated_utc || "—";
+      const count = data.count ?? (data.results ? data.results.length : 0);
+      metaEl.textContent = `Updated: ${updated} | Matches: ${count}`;
+
+      const rows = data.results || [];
+      if (!rows.length) {
+        bodyEl.innerHTML = `<tr><td colspan="6" style="padding:14px; color:#888;">No matches today.</td></tr>`;
+        return;
+      }
+
+      bodyEl.innerHTML = rows.map(r => {
+        const ticker = r.ticker || "—";
+        const price = safeNum(r.price);
+        const ma250 = safeNum(r.ma250);
+        const drop = safeNum(r.drop_pct_500d);
+
+        const baseHigh = safeNum(r.base_high_80d);
+        const baseHeight = safeNum(r.base_height_pct);
+
+        let dist = "—";
+        if (price && baseHigh) {
+          const belowPct = (baseHigh - price) / baseHigh * 100;
+          dist = belowPct >= 0 ? belowPct.toFixed(1) + "% below" : "Above";
+        }
+
+        // For US stocks. If later you scan other markets, we can map symbol format.
+        const tvUrl = `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(ticker)}`;
+
+        return `
+          <tr style="border-bottom:1px solid #1f1f1f;">
+            <td style="padding:12px;">
+              <a href="${tvUrl}" target="_blank" rel="noopener" style="color:#00ffcc; text-decoration:none; font-weight:700;">
+                ${ticker}
+              </a>
+            </td>
+            <td style="padding:12px; text-align:right;">${price ? fmt(price, 2) : "—"}</td>
+            <td style="padding:12px; text-align:right;">${drop !== null ? pct(drop, 1) : "—"}</td>
+            <td style="padding:12px; text-align:right;">${dist}</td>
+            <td style="padding:12px; text-align:right;">${baseHeight !== null ? pct(baseHeight, 1) : "—"}</td>
+            <td style="padding:12px; text-align:right;">${ma250 ? fmt(ma250, 2) : "—"}</td>
+          </tr>
+        `;
+      }).join("");
+
+    } catch (err) {
+      console.error(err);
+      metaEl.textContent = "Could not load picks.json (check it is in repo root).";
+      bodyEl.innerHTML = `
+        <tr><td colspan="6" style="padding:14px; color:#ff8a8a;">
+          Error loading picks.json. Please ensure picks.json is in the same folder as index.html.
+        </td></tr>
+      `;
+    }
+  }
+
+  loadPicks();
+</script>
 
 <div class="section">
 <h2>Fed Funds Rate</h2>

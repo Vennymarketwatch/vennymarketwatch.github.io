@@ -1,0 +1,25 @@
+{
+  "updated_utc": "2026-02-11 04:32:22 UTC",
+  "rules": {
+    "drop_lookback": 500,
+    "min_drop_pct": 50.0,
+    "ma_len": 250,
+    "base_bars": 80,
+    "max_base_height_pct": 22.0,
+    "near_high_pct": 10.0
+  },
+  "count": 1,
+  "results": [
+    {
+      "ticker": "AES",
+      "price": 16.25,
+      "ma250": 12.716919967651368,
+      "drop_pct_500d": 57.406571687971834,
+      "base_high_80d": 16.350000381469727,
+      "base_low_80d": 13.210000038146973,
+      "base_height_pct": 19.323079035832333,
+      "early_low_80d": 13.210000038146973,
+      "late_low_80d": 13.359999656677246
+    }
+  ]
+}

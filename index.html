@@ -7,38 +7,26 @@
 <style>
 body {
 font-family: Arial;
-background: #111;
+background: #0b0b0b;
 color: white;
 text-align: center;
+margin:0;
 }
+
 h1 {
 color: #00ffcc;
+margin-top:30px;
 }
+
 .section {
-margin: 40px;
+margin: 40px auto;
+width: 90%;
+max-width: 1200px;
 }
-.macro-grid{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:16px;
-}
-.macro-card{
-background:#1b1b1b;
-padding:18px;
-border-radius:12px;
-}
-.macro-title{
-font-size:14px;
-color:#aaa;
-}
-.macro-value{
-font-size:34px;
-color:#00ffcc;
-font-weight:bold;
-}
-.macro-sub{
-font-size:12px;
-color:#888;
+
+h2 {
+color:#ccc;
+margin-bottom:20px;
 }
 </style>
 </head>
@@ -48,40 +36,49 @@ color:#888;
 <h1>Market Dashboard</h1>
 
 <div class="section">
-<h2>Macro Snapshot</h2>
+<h2>Fed Funds Rate</h2>
 
-<div class="macro-grid">
-<div class="macro-card">
-<div class="macro-title">Fed Funds Rate</div>
-<div class="macro-value" id="fedfundsValue">Loading…</div>
-<div class="macro-sub" id="fedfundsDate"></div>
-</div>
-
-<div class="macro-card">
-<div class="macro-title">US CPI</div>
-<div class="macro-value" id="cpiValue">Loading…</div>
-<div class="macro-sub" id="cpiDate"></div>
-</div>
-</div>
-</div>
-
-<script>
-const FRED_API_KEY="5528eb633fd71ac2cdff279205b7064b";
-
-async function getFred(series,idValue,idDate,percent=false){
-const url=`https://api.stlouisfed.org/fred/series/observations?series_id=${series}&api_key=${FRED_API_KEY}&file_type=json&sort_order=desc&limit=1`;
-const res=await fetch(url);
-const data=await res.json();
-const obs=data.observations[0];
-let val=parseFloat(obs.value);
-document.getElementById(idValue).textContent=
-percent?val.toFixed(2)+"%":val.toFixed(1);
-document.getElementById(idDate).textContent="Latest: "+obs.date;
+<script src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js">
+{
+"symbol": "FRED:FEDFUNDS",
+"width": "100%",
+"height": "350",
+"theme": "dark",
+"style": "1"
 }
-
-getFred("FEDFUNDS","fedfundsValue","fedfundsDate",true);
-getFred("CPIAUCSL","cpiValue","cpiDate",false);
 </script>
+
+</div>
+
+<div class="section">
+<h2>US CPI</h2>
+
+<script src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js">
+{
+"symbol": "FRED:CPIAUCSL",
+"width": "100%",
+"height": "350",
+"theme": "dark",
+"style": "1"
+}
+</script>
+
+</div>
+
+<div class="section">
+<h2>NVIDIA Chart</h2>
+
+<script src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js">
+{
+"symbol": "NASDAQ:NVDA",
+"width": "100%",
+"height": "450",
+"theme": "dark",
+"style": "1"
+}
+</script>
+
+</div>
 
 </body>
 </html>

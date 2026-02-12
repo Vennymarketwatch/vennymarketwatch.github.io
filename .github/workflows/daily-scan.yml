@@ -3,8 +3,8 @@ name: Daily US Close Scan
 on:
   workflow_dispatch:
   schedule:
-    # 每15分钟跑一次（周一到周五，UTC），由 run_if_after_close.py 判断是否到“收盘+15分钟”
-    - cron: "0,15,30,45 * * * 1-5"
+    # 每小时跑一次（周一到周五，UTC），由 run_if_after_close.py 判断是否到“收盘+15分钟”
+    - cron: "0 * * * 1-5"
 
 permissions:
   contents: write

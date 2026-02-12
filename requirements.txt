@@ -1,0 +1,6 @@
+pandas
+yfinance
+openpyxl
+tqdm
+pandas_market_calendars
+requests

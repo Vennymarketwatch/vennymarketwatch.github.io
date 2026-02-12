@@ -4,32 +4,35 @@
 """
 US Stock Pattern Scanner (EOD, cached)
 
-Your model (latest):
-1) Last 500 bars max drawdown >= 50% (time-ordered peak -> trough)
-2) Trough must occur in first 60% of that 500-bar window (avoid trend stocks)
-3) Recent 200d must NOT break the old trough (allow 2% wiggle): recent_min >= window_min * 0.98
-4) Recovered from trough by at least +30%
-5) Price is above MA250 (structure recovery)
-6) Base (last 80 bars) is sideways: range <= 30% of median close
-7) Base has higher lows: 2nd half min low > 1st half min low
-8) MA20 rising: MA20 today > MA20 5 bars ago
-9) Near breakout: close within 10% of the recent 50-day high (close >= high_50d * 0.90)
-10) Break above MA250 must have happened within last 120 bars (breakout-then-base model)
-11) Base should be near MA250 (avoid trend continuation): |median(base) - MA250| / MA250 <= 15%
+Your updated model (as requested):
+- Keep everything unchanged unless explicitly mentioned.
+
+Changes applied:
+5) Refined to:
+   In last 500 bars:
+   - drop from highest close to lowest close >= 30%
+   - AND there exists at least one day where price is simultaneously below EMA20, EMA60, EMA120, EMA250
+6) Removed (no more "trough early in window")
+7) Changed to: last 100 trading days cannot break the 500-day window low
+9) Changed to: current price must be above EMA60, EMA120, EMA250
+10) Changed to: within last 150 trading days, must have at least one cross up above EMA250
+11) Removed (no base range/sideways constraint)
+12) Changed to: distance to EMA250 < 30% (instead of 15%)
+13) Removed
+14) Removed
+15) Changed to: current price must be BELOW the recent 90-day high (no 90% threshold)
 
 Universe:
 - SPTM + IWV holdings (proxy for S&P 1500 + Russell 3000-ish)
 - Clean tickers and exclude obvious non-common instruments by heuristics
-- Extra cleaning to drop weird tokens
 
-Filters:
-- US exchanges by holdings (implicit)
+Filters (unchanged):
 - price > $5
 - last day $ volume > $20M
 - market cap > $1B (best effort via yfinance, cached)
 
 Outputs:
-- picks.json
+- picks.json (payload with results)
 
 Cache:
 - data_cache/<TICKER>.pkl  (history)
@@ -59,38 +62,31 @@ HERE = os.path.dirname(__file__)
 CACHE_DIR = os.path.join(HERE, "data_cache")
 os.makedirs(CACHE_DIR, exist_ok=True)
 
-# Model parameters
-DROP_LOOKBACK = 500
-MIN_MAX_DRAWDOWN_PCT = 50.0
-TROUGH_MUST_BE_EARLY_FRAC = 0.60
+# Model parameters (updated per your request)
+WINDOW_BARS = 500
+MIN_DROP_PCT = 30.0                 # from highest close to lowest close in window
+RECENT_NO_BREAK_LOW_BARS = 100      # last 100 bars cannot break window low
+EMA_CROSS_LOOKBACK = 150            # last 150 bars must have a cross up above EMA250
+EMA_DISTANCE_MAX_PCT = 30.0         # |close - EMA250| / EMA250 < 30%
+RECENT_HIGH_LOOKBACK = 90           # close must be below recent 90-day high
 
-RECOVERY_MIN_FROM_TROUGH = 1.30
+# EMA lengths
+EMA20 = 20
+EMA60 = 60
+EMA120 = 120
+EMA250 = 250
 
-MA_LONG = 250
-MA_SHORT = 20
-MA_SHORT_SLOPE_LAG = 5  # compare to 5 bars ago
-
-BASE_BARS = 80
-MAX_BASE_RANGE_PCT = 30.0
-
-NEAR_HIGH_LOOKBACK = 50
-NEAR_HIGH_PCT = 0.90
-
-CROSS_LOOKBACK = 120
-
-BASE_NEAR_MA250_MAX_DIST_PCT = 15.0
-
-# Liquidity / size filters
+# Liquidity / size filters (unchanged)
 MIN_PRICE = 5.0
 MIN_DOLLAR_VOL = 20_000_000        # last close * last volume
 MIN_MKTCAP = 1_000_000_000         # 1B
 
-# Data fetch
+# Data fetch (unchanged)
 HIST_PERIOD = "3y"
 HIST_INTERVAL = "1d"
 REQUEST_TIMEOUT = 30
 
-# Universe sources
+# Universe sources (unchanged)
 SPTM_HOLDINGS_URL = "https://www.ssga.com/library-content/products/fund-data/etfs/us/holdings-daily-us-en-sptm.xlsx"
 IWV_HOLDINGS_URL  = "https://www.ishares.com/us/products/239714/ishares-russell-3000-etf/1467271812596.ajax?fileType=csv&fileName=IWV_holdings&dataType=fund"
 
@@ -127,7 +123,8 @@ def is_plausible_us_common_ticker(t: str) -> bool:
 
 def exclude_special_instruments(t: str) -> bool:
     """
-    Best-effort exclusions: preferred/warrants/rights/units + leveraged names
+    Best-effort exclusions: preferred/warrants/rights/units.
+    (You asked to exclude ETF/Preferred/Warrants/Rights/Units — ETFs should not be in holdings universe, but we keep this heuristic.)
     """
     tt = t.upper()
 
@@ -140,8 +137,6 @@ def exclude_special_instruments(t: str) -> bool:
         return True
     if re.search(r"-U$", tt):
         return True
-
-    # Some holdings files put weird words, reject obvious non-tickers already by regex.
 
     return False
 
@@ -175,7 +170,6 @@ def fetch_holdings_tickers_sptm() -> List[str]:
         vals = df[col_name].dropna().astype(str).tolist()
         tickers.extend(vals)
 
-        # usually enough; avoid parsing too many sheets
         if len(tickers) > 500:
             break
 
@@ -283,7 +277,6 @@ def fetch_history_cached(ticker: str) -> Optional[pd.DataFrame]:
     if df is None or df.empty:
         return None
 
-    # yfinance sometimes returns MultiIndex columns
     if isinstance(df.columns, pd.MultiIndex):
         df.columns = [c[0] for c in df.columns]
 
@@ -297,7 +290,6 @@ def fetch_history_cached(ticker: str) -> Optional[pd.DataFrame]:
 def get_marketcap_best_effort(ticker: str) -> Optional[float]:
     meta_path = os.path.join(CACHE_DIR, f"meta_{ticker}.json")
 
-    # cache
     if os.path.exists(meta_path):
         try:
             with open(meta_path, "r", encoding="utf-8") as f:
@@ -333,26 +325,8 @@ def get_marketcap_best_effort(ticker: str) -> Optional[float]:
 
 
 # -----------------------
-# Pattern logic
+# Pattern logic (UPDATED)
 # -----------------------
-def max_drawdown_pct(close: pd.Series) -> Tuple[float, int, int]:
-    """
-    Time-ordered max drawdown:
-    dd = 1 - close / cummax(close)
-    returns: (max_dd_pct, peak_idx, trough_idx)
-    """
-    close = close.dropna()
-    if len(close) < 50:
-        return 0.0, -1, -1
-
-    roll_max = close.cummax()
-    dd = 1.0 - (close / roll_max)
-    trough_i = int(np.argmax(dd.values))
-    max_dd = float(dd.iloc[trough_i] * 100.0)
-
-    peak_i = int(np.argmax(close.iloc[: trough_i + 1].values)) if trough_i >= 0 else -1
-    return max_dd, peak_i, trough_i
-
 def scan_shape(ticker: str) -> Optional[Dict]:
     df = fetch_history_cached(ticker)
     if df is None or df.empty:
@@ -363,7 +337,7 @@ def scan_shape(ticker: str) -> Optional[Dict]:
     if close_last is None or vol_last is None:
         return None
 
-    # Basic filters
+    # Basic filters (unchanged)
     if close_last < MIN_PRICE:
         return None
     dollar_vol = close_last * vol_last
@@ -371,114 +345,111 @@ def scan_shape(ticker: str) -> Optional[Dict]:
         return None
 
     # Need enough bars
-    need = max(DROP_LOOKBACK, MA_LONG, BASE_BARS, NEAR_HIGH_LOOKBACK, CROSS_LOOKBACK) + 30
+    need = max(WINDOW_BARS, EMA250, RECENT_NO_BREAK_LOW_BARS, EMA_CROSS_LOOKBACK, RECENT_HIGH_LOOKBACK) + 30
     if len(df) < need:
         return None
 
-    # Market cap (best effort)
+    # Market cap (unchanged; best effort)
     mc = get_marketcap_best_effort(ticker)
     if mc is not None and mc < MIN_MKTCAP:
         return None
 
-    # 1) Big drop: max drawdown in last DROP_LOOKBACK (time-ordered)
-    window = df.tail(DROP_LOOKBACK).copy()
-    max_dd, peak_i, trough_i = max_drawdown_pct(window["Close"])
-    if max_dd < MIN_MAX_DRAWDOWN_PCT:
+    # Compute EMAs on full df
+    ema20 = df["Close"].ewm(span=EMA20, adjust=False).mean()
+    ema60 = df["Close"].ewm(span=EMA60, adjust=False).mean()
+    ema120 = df["Close"].ewm(span=EMA120, adjust=False).mean()
+    ema250 = df["Close"].ewm(span=EMA250, adjust=False).mean()
+
+    ema60_last = safe_float(ema60.iloc[-1])
+    ema120_last = safe_float(ema120.iloc[-1])
+    ema250_last = safe_float(ema250.iloc[-1])
+    if ema60_last is None or ema120_last is None or ema250_last is None or ema250_last <= 0:
         return None
 
-    # --- 深跌后修复过滤（防趋势股） ---
-    # trough must be early in window
-    if trough_i > int(len(window) * TROUGH_MUST_BE_EARLY_FRAC):
+    # -------------------------
+    # 5) 500-day window: drop >= 30% from highest close to lowest close
+    #    AND there exists a day where price simultaneously below EMA20/60/120/250
+    # -------------------------
+    window = df.tail(WINDOW_BARS).copy()
+
+    w_high = safe_float(window["Close"].max())
+    w_low = safe_float(window["Close"].min())
+    if w_high is None or w_low is None or w_high <= 0:
         return None
 
-    # recent 200d must not undercut old trough (allow 2% wiggle)
-    recent_min = safe_float(df.tail(200)["Low"].min())
-    window_min = safe_float(window["Low"].min())
-    if recent_min is None or window_min is None:
-        return None
-    if recent_min < window_min * 0.98:
+    drop_pct = (w_high - w_low) / w_high * 100.0
+    if drop_pct < MIN_DROP_PCT:
         return None
 
-    trough_close = safe_float(window["Close"].iloc[trough_i])
-    if trough_close is None or trough_close <= 0:
+    # Condition: close simultaneously below all EMAs at least once in window
+    ema20_w = ema20.tail(WINDOW_BARS)
+    ema60_w = ema60.tail(WINDOW_BARS)
+    ema120_w = ema120.tail(WINDOW_BARS)
+    ema250_w = ema250.tail(WINDOW_BARS)
+
+    bear = (
+        (window["Close"] < ema20_w) &
+        (window["Close"] < ema60_w) &
+        (window["Close"] < ema120_w) &
+        (window["Close"] < ema250_w)
+    )
+    if not bool(bear.any()):
         return None
 
-    # 2) Recovery from trough
-    if close_last < trough_close * RECOVERY_MIN_FROM_TROUGH:
+    # -------------------------
+    # 7) Last 100 bars cannot break the window low
+    # -------------------------
+    recent100_min = safe_float(df.tail(RECENT_NO_BREAK_LOW_BARS)["Low"].min())
+    if recent100_min is None:
         return None
-    # --- 必须经历过深熊：价格曾跌破 MA250 - 20% ---
-    ma250_window = window["Close"].rolling(MA_LONG).mean()
-    bear_zone = window["Close"] < ma250_window * 0.8
-    if not bear_zone.any():
-        return None
-
-    # 3) Above MA250
-    ma250 = df["Close"].rolling(MA_LONG).mean()
-    ma250_last = safe_float(ma250.iloc[-1])
-    if ma250_last is None:
-        return None
-    if close_last <= ma250_last:
+    if recent100_min < w_low:
         return None
 
-    # 10) Cross above MA250 must occur within last CROSS_LOOKBACK
-    recent = df.tail(CROSS_LOOKBACK).copy()
-    ma250_recent = ma250.tail(CROSS_LOOKBACK)
-
-    cross_up = ((recent["Close"].shift(1) < ma250_recent.shift(1)) &
-                (recent["Close"] > ma250_recent)).any()
-    if not bool(cross_up):
+    # -------------------------
+    # 9) Current price above EMA60/120/250
+    # -------------------------
+    if close_last <= ema60_last or close_last <= ema120_last or close_last <= ema250_last:
         return None
 
-    # 4) Base tightness over last BASE_BARS
-    base = df.tail(BASE_BARS).copy()
-    base_high = safe_float(base["High"].max())
-    base_low = safe_float(base["Low"].min())
-    base_mid = safe_float(base["Close"].median())
-    if base_high is None or base_low is None or base_mid is None or base_mid <= 0:
+    # -------------------------
+    # 10) Last 150 bars must have a cross up above EMA250
+    # -------------------------
+    recent = df.tail(EMA_CROSS_LOOKBACK)
+    ema250_r = ema250.tail(EMA_CROSS_LOOKBACK)
+
+    cross_up = (
+        (recent["Close"].shift(1) < ema250_r.shift(1)) &
+        (recent["Close"] > ema250_r)
+    )
+    if not bool(cross_up.any()):
         return None
 
-    base_range_pct = (base_high - base_low) / base_mid * 100.0
-    if base_range_pct > MAX_BASE_RANGE_PCT:
+    # -------------------------
+    # 12) Distance to EMA250 < 30%
+    # -------------------------
+    dist_pct = abs(close_last - ema250_last) / ema250_last * 100.0
+    if dist_pct > EMA_DISTANCE_MAX_PCT:
         return None
 
-    # 11) base near MA250 (avoid trend continuation far above MA250)
-    distance_pct = abs(base_mid - ma250_last) / ma250_last * 100.0
-    if distance_pct > BASE_NEAR_MA250_MAX_DIST_PCT:
+    # -------------------------
+    # 15) Current price BELOW recent 90-day high (no 90% threshold)
+    # -------------------------
+    high90 = safe_float(df.tail(RECENT_HIGH_LOOKBACK)["Close"].max())
+    if high90 is None or high90 <= 0:
+        return None
+    if close_last >= high90:
         return None
 
-    # 5) Higher lows within base
-    first_half_min = safe_float(base["Low"].iloc[: BASE_BARS // 2].min())
-    second_half_min = safe_float(base["Low"].iloc[BASE_BARS // 2 :].min())
-    if first_half_min is None or second_half_min is None:
-        return None
-    if second_half_min <= first_half_min:
-        return None
-
-    # 6) MA20 rising
-    ma20 = df["Close"].rolling(MA_SHORT).mean()
-    ma20_last = safe_float(ma20.iloc[-1])
-    ma20_prev = safe_float(ma20.iloc[-(MA_SHORT_SLOPE_LAG + 1)])  # 5 bars ago
-    if ma20_last is None or ma20_prev is None:
-        return None
-    if ma20_last <= ma20_prev:
-        return None
-
-    # 7) Near recent 50-day high
-    prior_high = safe_float(df.tail(NEAR_HIGH_LOOKBACK)["Close"].max())
-    if prior_high is None or prior_high <= 0:
-        return None
-    if close_last < prior_high * NEAR_HIGH_PCT:
-        return None
-
+    # If passed all filters, return result
     return {
         "ticker": ticker,
         "close": round(close_last, 2),
-        "high_50d": round(prior_high, 2),
-        "ma250": round(ma250_last, 2),
-        "ma20": round(ma20_last, 2),
-        "max_drawdown_pct": round(max_dd, 2),
-        "base_range_pct": round(base_range_pct, 2),
-        "base_ma250_dist_pct": round(distance_pct, 2),
+        "high90": round(high90, 2),
+        "drop500_pct": round(drop_pct, 2),
+        "ema60": round(ema60_last, 2),
+        "ema120": round(ema120_last, 2),
+        "ema250": round(ema250_last, 2),
+        "ema250_dist_pct": round(dist_pct, 2),
         "dollar_vol": int(dollar_vol),
         "marketCap": int(mc) if mc else None,
     }
@@ -499,7 +470,6 @@ def main():
     universe = get_universe()
     print(f"Universe (clean): {len(universe)}")
 
-    # Optional pre-filter pass: keep only tickers that have cached history or can be fetched quickly
     results: List[Dict] = []
     failed = 0
 
@@ -512,11 +482,11 @@ def main():
             failed += 1
             continue
 
-    # Sort: closest to 50d high first, then dollar volume
-    def sort_key(x: Dict) -> Tuple[float, float]:
-        prior = x.get("high_50d") or 0
+    # Sort: closest to high90 first, then dollar volume
+    def sort_key(x: Dict) -> tuple:
+        high90 = x.get("high90") or 0
         close = x.get("close") or 0
-        ratio = (close / prior) if prior else 0
+        ratio = (close / high90) if high90 else 0
         return (ratio, x.get("dollar_vol", 0))
 
     results.sort(key=sort_key, reverse=True)
@@ -527,22 +497,16 @@ def main():
         "found": len(results),
         "failed": failed,
         "params": {
-            "DROP_LOOKBACK": DROP_LOOKBACK,
-            "MIN_MAX_DRAWDOWN_PCT": MIN_MAX_DRAWDOWN_PCT,
-            "TROUGH_MUST_BE_EARLY_FRAC": TROUGH_MUST_BE_EARLY_FRAC,
-            "RECOVERY_MIN_FROM_TROUGH": RECOVERY_MIN_FROM_TROUGH,
-            "MA_LONG": MA_LONG,
-            "MA_SHORT": MA_SHORT,
-            "MA_SHORT_SLOPE_LAG": MA_SHORT_SLOPE_LAG,
-            "BASE_BARS": BASE_BARS,
-            "MAX_BASE_RANGE_PCT": MAX_BASE_RANGE_PCT,
-            "NEAR_HIGH_LOOKBACK": NEAR_HIGH_LOOKBACK,
-            "NEAR_HIGH_PCT": NEAR_HIGH_PCT,
-            "CROSS_LOOKBACK": CROSS_LOOKBACK,
-            "BASE_NEAR_MA250_MAX_DIST_PCT": BASE_NEAR_MA250_MAX_DIST_PCT,
+            "WINDOW_BARS": WINDOW_BARS,
+            "MIN_DROP_PCT": MIN_DROP_PCT,
+            "RECENT_NO_BREAK_LOW_BARS": RECENT_NO_BREAK_LOW_BARS,
+            "EMA_CROSS_LOOKBACK": EMA_CROSS_LOOKBACK,
+            "EMA_DISTANCE_MAX_PCT": EMA_DISTANCE_MAX_PCT,
+            "RECENT_HIGH_LOOKBACK": RECENT_HIGH_LOOKBACK,
             "MIN_PRICE": MIN_PRICE,
             "MIN_DOLLAR_VOL": MIN_DOLLAR_VOL,
             "MIN_MKTCAP": MIN_MKTCAP,
+            "EMA": [EMA20, EMA60, EMA120, EMA250],
         },
         "results": results,
     }

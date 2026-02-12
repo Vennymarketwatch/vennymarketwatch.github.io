@@ -13,6 +13,8 @@
       --mint:#8fffe2;
       --text:#d7e7e2;
       --muted:rgba(215,231,226,0.65);
+      --bad:#ff6b6b;
+      --good:#43f5c2;
     }
     body{
       margin:0;
@@ -21,9 +23,9 @@
       font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
     }
     .container{
-      max-width:1200px;
+      max-width:1250px;
       margin:0 auto;
-      padding:28px 16px 60px;
+      padding:28px 16px 70px;
     }
     h1{
       text-align:center;
@@ -34,11 +36,11 @@
     }
     .subtitle{
       text-align:center;
-      margin:0 0 26px;
+      margin:0 0 22px;
       color:var(--muted);
     }
     .section{
-      margin:18px 0;
+      margin:16px 0;
       padding:18px;
       border-radius:18px;
       background:var(--card);
@@ -59,6 +61,7 @@
       align-items:center;
       justify-content:center;
       margin:10px 0 16px;
+      flex-wrap:wrap;
     }
     .pager button{
       padding:8px 14px;
@@ -102,10 +105,77 @@
       gap:14px;
     }
 
+    /* Sector strength */
+    .sector-wrap{
+      display:grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap:14px;
+      align-items:start;
+    }
+    .sector-card{
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      padding:12px;
+    }
+    .sector-meta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      color:var(--muted);
+      font-size:13px;
+      margin-top:6px;
+    }
+    .sector-canvas{
+      width:100%;
+      height:420px;
+      display:block;
+      border-radius:12px;
+      background: rgba(0,0,0,0.25);
+      border:1px solid rgba(255,255,255,0.08);
+    }
+    .rank-title{
+      font-weight:800;
+      color:#e9fffa;
+      margin:0 0 8px 0;
+      text-align:center;
+    }
+    .rank-box{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+    }
+    .rank-list{
+      border:1px solid rgba(255,255,255,0.10);
+      border-radius:12px;
+      padding:10px 12px;
+      background: rgba(0,0,0,0.18);
+    }
+    .rank-list h3{
+      margin:0 0 8px 0;
+      font-size:14px;
+      color:#e9fffa;
+      text-align:left;
+    }
+    .rank-item{
+      display:flex;
+      justify-content:space-between;
+      padding:6px 0;
+      border-bottom:1px dashed rgba(255,255,255,0.10);
+      font-size:13px;
+    }
+    .rank-item:last-child{ border-bottom:none; }
+    .pos{ color: var(--good); font-weight:700;}
+    .neg{ color: var(--bad); font-weight:700;}
+
     @media (max-width: 980px){
       .charts-grid{ grid-template-columns: 1fr; }
       .two-col{ grid-template-columns: 1fr; }
+      .sector-wrap{ grid-template-columns: 1fr; }
       .chart-box{ height:360px; }
+      .sector-canvas{ height:420px; }
       h1{ font-size:34px; }
     }
   </style>
@@ -114,9 +184,41 @@
 <body>
   <div class="container">
     <h1>Market Dashboard</h1>
-    <div class="subtitle">My daily scan picks + macro snapshot</div>
+    <div class="subtitle">Daily scan picks + sector relative strength + macro snapshot</div>
 
-    <!-- ===== My Picks Charts (Top) ===== -->
+    <!-- ===== Sector Relative Strength (Top Section) ===== -->
+    <div class="section">
+      <h2>Sector Relative Strength (Sector / SPY)</h2>
+      <div class="sector-wrap">
+        <div class="sector-card">
+          <canvas id="sectorCanvas" class="sector-canvas"></canvas>
+          <div class="sector-meta">
+            <span id="sectorStatus">Loading sector data...</span>
+            <span>Lookback: <b>~120 trading days</b></span>
+            <span>Ranking window: <b>5 trading days</b></span>
+          </div>
+        </div>
+
+        <div class="sector-card">
+          <div class="rank-title">Top / Bottom Sectors (5D vs SPY)</div>
+          <div class="rank-box">
+            <div class="rank-list">
+              <h3>Top 3</h3>
+              <div id="top3"></div>
+            </div>
+            <div class="rank-list">
+              <h3>Bottom 3</h3>
+              <div id="bottom3"></div>
+            </div>
+          </div>
+          <div class="sector-meta" style="justify-content:flex-start;margin-top:10px;">
+            <span style="opacity:.85">Method: compute (Sector/SPY) index, then rank by 5D % change.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== My Picks Charts ===== -->
     <div class="section">
       <h2>My Picks Charts (6 per page)</h2>
 
@@ -146,7 +248,6 @@
       </div>
     </div>
 
-    <!-- ===== Example Single Chart ===== -->
     <div class="section">
       <h2>NVDA Chart</h2>
       <div class="chart-card">
@@ -155,7 +256,6 @@
       </div>
     </div>
 
-    <!-- ===== Heatmap ===== -->
     <div class="section">
       <h2>Market Heatmap</h2>
       <div id="heatmap"></div>
@@ -163,9 +263,9 @@
 
   </div>
 
-  <!-- TradingView Widgets -->
+  <!-- TradingView Widgets (fixed width/height, no autosize) -->
   <script>
-    function addTVWidgetAdvanced(containerId, symbol){
+    function addTVWidgetAdvanced(containerId, symbol, height=320){
       const el = document.getElementById(containerId);
       if(!el) return;
 
@@ -173,7 +273,8 @@
       s.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
       s.async = true;
       s.textContent = JSON.stringify({
-        autosize: true,
+        width: "100%",
+        height: height,
         symbol: symbol,
         interval: "D",
         timezone: "Etc/UTC",
@@ -214,11 +315,10 @@
       el.appendChild(s);
     }
 
-    // Macro + NVDA + heatmap
     document.addEventListener("DOMContentLoaded", () => {
-      addTVWidgetAdvanced("fedFunds", "FRED:EFFR");
-      addTVWidgetAdvanced("cpi", "ECONOMICS:USCPI");
-      addTVWidgetAdvanced("nvda", "NASDAQ:NVDA");
+      addTVWidgetAdvanced("fedFunds", "FRED:EFFR", 320);
+      addTVWidgetAdvanced("cpi", "ECONOMICS:USCPI", 320);
+      addTVWidgetAdvanced("nvda", "NASDAQ:NVDA", 520);
       addTVHeatmap("heatmap");
     });
   </script>
@@ -246,7 +346,7 @@
         const start = (page - 1) * PAGE_SIZE;
         const items = allTickers.slice(start, start + PAGE_SIZE);
 
-        info.textContent = `Page ${page} / ${totalPages}  |  Total: ${allTickers.length}`;
+        info.textContent = `Page ${page} / ${totalPages} | Total: ${allTickers.length}`;
         prevBtn.disabled = (page <= 1);
         nextBtn.disabled = (page >= totalPages);
 
@@ -273,8 +373,9 @@
           s.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
           s.async = true;
           s.textContent = JSON.stringify({
-            autosize: true,
-            symbol: t,               // if needed: "NASDAQ:"+t
+            width: "100%",
+            height: 320,
+            symbol: t,     // if needed: "NASDAQ:"+t
             interval: "D",
             timezone: "Etc/UTC",
             theme: "dark",
@@ -312,6 +413,256 @@
         if(nextBtn) nextBtn.addEventListener("click", () => { page++; renderPage(); });
         loadPicks();
       });
+    })();
+  </script>
+
+  <!-- Sector Relative Strength (Canvas) + Top3/Bottom3 -->
+  <script>
+    (function(){
+      // US sector ETFs (GICS-ish) + SPY baseline
+      const SECTORS = [
+        { name: "XLE", label: "Energy" },
+        { name: "XLB", label: "Materials" },
+        { name: "XLI", label: "Industrials" },
+        { name: "XLF", label: "Financials" },
+        { name: "XLK", label: "Technology" },
+        { name: "XLV", label: "Health Care" },
+        { name: "XLY", label: "Consumer Discr." },
+        { name: "XLP", label: "Consumer Staples" },
+        { name: "XLU", label: "Utilities" },
+        { name: "XLRE", label: "Real Estate" },
+        { name: "XLC", label: "Comm Services" }
+      ];
+      const BASE = "SPY";
+
+      const LOOKBACK_DAYS = 140;   // fetch a bit more, we will plot ~120 trading days
+      const PLOT_POINTS = 120;
+      const RANK_WINDOW = 5;
+
+      function $(id){ return document.getElementById(id); }
+
+      // Fetch daily close from Stooq (usually no CORS problem)
+      // Example: https://stooq.com/q/d/l/?s=spy.us&i=d
+      async function fetchStooq(symbol){
+        const url = `https://stooq.com/q/d/l/?s=${symbol.toLowerCase()}.us&i=d`;
+        const r = await fetch(url, { cache: "no-store" });
+        const txt = await r.text();
+        // CSV: Date,Open,High,Low,Close,Volume
+        const lines = txt.trim().split("\n");
+        if(lines.length < 10) throw new Error("Stooq data too short for " + symbol);
+
+        const out = [];
+        for(let i=1;i<lines.length;i++){
+          const parts = lines[i].split(",");
+          const date = parts[0];
+          const close = parseFloat(parts[4]);
+          if(date && Number.isFinite(close)) out.push({ date, close });
+        }
+        return out;
+      }
+
+      // align series by date intersection
+      function alignByDate(seriesMap){
+        const keys = Object.keys(seriesMap);
+        const dateSets = keys.map(k => new Set(seriesMap[k].map(p => p.date)));
+        // intersection dates
+        let dates = [...dateSets[0]];
+        for(let i=1;i<dateSets.length;i++){
+          const set = dateSets[i];
+          dates = dates.filter(d => set.has(d));
+        }
+        dates.sort();
+        // keep last N dates
+        if(dates.length > LOOKBACK_DAYS) dates = dates.slice(dates.length - LOOKBACK_DAYS);
+
+        const aligned = {};
+        for(const k of keys){
+          const m = new Map(seriesMap[k].map(p => [p.date, p.close]));
+          aligned[k] = dates.map(d => ({ date: d, close: m.get(d) }));
+        }
+        return { dates, aligned };
+      }
+
+      function pctChange(a, b){
+        // from b to a: (a/b - 1)
+        return (b && b !== 0) ? (a / b - 1) : 0;
+      }
+
+      // Build ratio index: (sector_close / spy_close) normalized to 100 at start
+      function buildRatioIndex(sector, spy){
+        const n = Math.min(sector.length, spy.length);
+        const ratio = [];
+        for(let i=0;i<n;i++){
+          ratio.push({ date: sector[i].date, v: sector[i].close / spy[i].close });
+        }
+        // take last PLOT_POINTS
+        const sliced = ratio.slice(Math.max(0, ratio.length - PLOT_POINTS));
+        const base = sliced[0]?.v || 1;
+        return sliced.map(p => ({ date: p.date, v: (p.v / base) * 100 }));
+      }
+
+      function renderTopBottom(changes){
+        // changes: [{ticker,label,chg}]
+        const sorted = [...changes].sort((a,b) => b.chg - a.chg);
+        const top = sorted.slice(0,3);
+        const bottom = sorted.slice(-3).reverse();
+
+        function rowHTML(x){
+          const cls = x.chg >= 0 ? "pos" : "neg";
+          const pct = (x.chg * 100).toFixed(2) + "%";
+          return `<div class="rank-item"><span>${x.ticker} <span style="opacity:.7">(${x.label})</span></span><span class="${cls}">${pct}</span></div>`;
+        }
+
+        $("top3").innerHTML = top.map(rowHTML).join("");
+        $("bottom3").innerHTML = bottom.map(rowHTML).join("");
+      }
+
+      // Simple multi-line chart on canvas
+      function drawChart(canvas, seriesList){
+        const ctx = canvas.getContext("2d");
+        const rect = canvas.getBoundingClientRect();
+        // handle HiDPI
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = Math.floor(rect.width * dpr);
+        canvas.height = Math.floor(rect.height * dpr);
+        ctx.scale(dpr, dpr);
+
+        const w = rect.width;
+        const h = rect.height;
+
+        // padding
+        const padL = 46, padR = 8, padT = 10, padB = 26;
+        const iw = w - padL - padR;
+        const ih = h - padT - padB;
+
+        // background
+        ctx.clearRect(0,0,w,h);
+        ctx.fillStyle = "rgba(0,0,0,0.20)";
+        ctx.fillRect(0,0,w,h);
+
+        // find min/max
+        let minV = Infinity, maxV = -Infinity;
+        for(const s of seriesList){
+          for(const p of s.data){
+            if(p.v < minV) minV = p.v;
+            if(p.v > maxV) maxV = p.v;
+          }
+        }
+        // add padding to range
+        const range = maxV - minV || 1;
+        minV -= range * 0.08;
+        maxV += range * 0.08;
+
+        function x(i, n){ return padL + (i/(n-1)) * iw; }
+        function y(v){ return padT + (1 - (v - minV)/(maxV - minV)) * ih; }
+
+        // grid
+        ctx.strokeStyle = "rgba(255,255,255,0.08)";
+        ctx.lineWidth = 1;
+        const gridY = 5;
+        for(let i=0;i<=gridY;i++){
+          const yy = padT + (i/gridY)*ih;
+          ctx.beginPath();
+          ctx.moveTo(padL, yy);
+          ctx.lineTo(padL+iw, yy);
+          ctx.stroke();
+        }
+
+        // y labels
+        ctx.fillStyle = "rgba(215,231,226,0.75)";
+        ctx.font = "12px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Arial";
+        for(let i=0;i<=gridY;i++){
+          const v = maxV - (i/gridY)*(maxV-minV);
+          const yy = padT + (i/gridY)*ih;
+          ctx.fillText(v.toFixed(2), 6, yy+4);
+        }
+
+        // draw lines
+        for(const s of seriesList){
+          const n = s.data.length;
+          ctx.strokeStyle = s.color;
+          ctx.lineWidth = 1.6;
+          ctx.beginPath();
+          for(let i=0;i<n;i++){
+            const px = x(i,n);
+            const py = y(s.data[i].v);
+            if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+          }
+          ctx.stroke();
+        }
+
+        // bottom date label (first/last)
+        const firstDate = seriesList[0]?.data[0]?.date || "";
+        const lastDate = seriesList[0]?.data[seriesList[0].data.length-1]?.date || "";
+        ctx.fillStyle = "rgba(215,231,226,0.70)";
+        ctx.fillText(firstDate, padL, h-8);
+        ctx.fillText(lastDate, w-90, h-8);
+      }
+
+      // generate distinct readable colors (pre-set)
+      const COLORS = [
+        "#7BDFF2","#B2F7EF","#EFF7F6","#F7D6E0","#F2B5D4",
+        "#F8C0C8","#C3FBD8","#B5F2E2","#A9DEF9","#E4C1F9",
+        "#FFCAD4","#D4A5A5"
+      ];
+
+      async function main(){
+        const status = $("sectorStatus");
+        try{
+          status.textContent = "Loading sector prices...";
+          // fetch all: sectors + spy
+          const seriesMap = {};
+          seriesMap[BASE] = await fetchStooq(BASE);
+          for(const s of SECTORS){
+            seriesMap[s.name] = await fetchStooq(s.name);
+          }
+
+          // align by date intersection
+          const { aligned } = alignByDate(seriesMap);
+          const spy = aligned[BASE];
+
+          // build ratio indices + 5D change
+          const seriesList = [];
+          const changes = [];
+
+          let ci = 0;
+          for(const s of SECTORS){
+            const sec = aligned[s.name];
+            const ratioIdx = buildRatioIndex(sec, spy); // normalized to 100
+            seriesList.push({ name: s.name, label: s.label, data: ratioIdx, color: COLORS[ci % COLORS.length] });
+            ci++;
+
+            // 5-day change of ratio index (use last and last-5)
+            const n = ratioIdx.length;
+            if(n > RANK_WINDOW){
+              const last = ratioIdx[n-1].v;
+              const prev = ratioIdx[n-1-RANK_WINDOW].v;
+              const chg = pctChange(last, prev);
+              changes.push({ ticker: s.name, label: s.label, chg });
+            }
+          }
+
+          // render top/bottom
+          renderTopBottom(changes);
+
+          // draw canvas
+          status.textContent = "Rendering chart...";
+          const canvas = $("sectorCanvas");
+          drawChart(canvas, seriesList);
+
+          status.textContent = "Updated.";
+        }catch(e){
+          console.error(e);
+          status.textContent = "Failed to load sector data (check Console).";
+        }
+      }
+
+      window.addEventListener("resize", () => {
+        // re-render on resize (best effort)
+        main();
+      });
+
+      document.addEventListener("DOMContentLoaded", main);
     })();
   </script>
 

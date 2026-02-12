@@ -406,6 +406,11 @@ def scan_shape(ticker: str) -> Optional[Dict]:
     # 2) Recovery from trough
     if close_last < trough_close * RECOVERY_MIN_FROM_TROUGH:
         return None
+    # --- 必须经历过深熊：价格曾跌破 MA250 - 20% ---
+    ma250_window = window["Close"].rolling(MA_LONG).mean()
+    bear_zone = window["Close"] < ma250_window * 0.8
+    if not bear_zone.any():
+        return None
 
     # 3) Above MA250
     ma250 = df["Close"].rolling(MA_LONG).mean()

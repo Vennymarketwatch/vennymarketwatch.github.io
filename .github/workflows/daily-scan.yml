@@ -31,9 +31,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: data_cache
-          key: data-cache-${{ runner.os }}-${{ github.run_id }}
+          key: data-cache-${{ github.run_id }}
           restore-keys: |
-            data-cache-${{ runner.os }}-
+            data-cache-
 
       - name: Run after close gate (runs scan.py inside if needed)
         run: |

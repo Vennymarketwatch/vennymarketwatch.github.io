@@ -515,12 +515,131 @@ def main():
     }
 
     with open("picks.json", "w", encoding="utf-8") as f:
-        json.dump(payload, f, indent=2, ensure_ascii=False)
-
-    print("\nScan complete. Found:", len(results))
+        json.dump(payload, f, ensure_ascii=False, indent=2)
     print("Wrote: picks.json")
-    print("Cache folder:", CACHE_DIR)
 
+    build_sector_rs_json("sectors.json")
+    print("Wrote: sectors.json")
+
+    print("Cache folder:", CACHE_DIR)
+    
+import json
+from datetime import datetime
+import yfinance as yf
+import pandas as pd
+
+def build_sector_rs_json(out_path: str = "sectors.json",
+                         lookback_points: int = 120,
+                         rank_window: int = 5) -> None:
+    """
+    Generate sectors.json for GitHub Pages (no API key needed).
+    Computes Sector/SPY ratio index (rebased to 100) and Top/Bottom 3 by 5D % change.
+    """
+    base = "SPY"
+    sectors = [
+        ("XLE","Energy"),
+        ("XLB","Materials"),
+        ("XLI","Industrials"),
+        ("XLF","Financials"),
+        ("XLK","Technology"),
+        ("XLV","Health Care"),
+        ("XLY","Consumer Discr."),
+        ("XLP","Consumer Staples"),
+        ("XLU","Utilities"),
+        ("XLRE","Real Estate"),
+        ("XLC","Comm Services"),
+    ]
+    tickers = [base] + [t for t,_ in sectors]
+
+    # Pull enough data to have a clean 120-day window even with holidays/missing
+    df = yf.download(
+        tickers=tickers,
+        period="1y",
+        interval="1d",
+        auto_adjust=True,
+        group_by="ticker",
+        progress=False,
+        threads=True,
+    )
+
+    # Normalize Close extraction (yfinance returns different shapes depending on #tickers)
+    closes = {}
+    if isinstance(df.columns, pd.MultiIndex):
+        # MultiIndex: (field, ticker) or (ticker, field) depending; handle both
+        if "Close" in df.columns.get_level_values(0):
+            # (field, ticker)
+            close_df = df["Close"]
+        else:
+            # (ticker, field)
+            close_df = df.xs("Close", axis=1, level=1)
+        for t in tickers:
+            if t in close_df.columns:
+                closes[t] = close_df[t].dropna()
+    else:
+        # Single ticker case (unlikely here)
+        closes[base] = df["Close"].dropna()
+
+    # Find common dates across all series
+    common = None
+    for t in tickers:
+        s = closes.get(t)
+        if s is None or s.empty:
+            continue
+        idx = set(s.index)
+        common = idx if common is None else (common & idx)
+
+    if not common:
+        raise RuntimeError("No common dates across sector series.")
+
+    common_dates = sorted(list(common))
+    # keep last (lookback + buffer)
+    buffer = 20
+    common_dates = common_dates[-(lookback_points + buffer):]
+
+    # Build ratio index for each sector: (sector/spy) rebased to 100
+    spy = closes[base].loc[common_dates].astype(float)
+    series_out = []
+    changes = []
+
+    for t,label in sectors:
+        sec = closes[t].loc[common_dates].astype(float)
+        ratio = (sec / spy).dropna()
+
+        # cut to last lookback_points
+        ratio = ratio.iloc[-lookback_points:]
+        if ratio.empty:
+            continue
+
+        base_v = float(ratio.iloc[0])
+        idx_vals = (ratio / base_v) * 100.0
+
+        data = [{"date": d.strftime("%Y-%m-%d"), "v": float(v)} for d,v in idx_vals.items()]
+        series_out.append({"t": t, "label": label, "data": data})
+
+        # 5D change
+        if len(idx_vals) > rank_window:
+            last = float(idx_vals.iloc[-1])
+            prev = float(idx_vals.iloc[-1 - rank_window])
+            chg = (last / prev - 1.0) if prev != 0 else 0.0
+            changes.append({"t": t, "label": label, "chg": chg})
+
+    # Top/Bottom 3
+    changes_sorted = sorted(changes, key=lambda x: x["chg"], reverse=True)
+    top3 = changes_sorted[:3]
+    bottom3 = list(reversed(changes_sorted[-3:]))
+
+    payload = {
+        "updated": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%SZ"),
+        "base": base,
+        "lookback_points": lookback_points,
+        "rank_window": rank_window,
+        "top3": top3,
+        "bottom3": bottom3,
+        "series": series_out,
+    }
+
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
 
 if __name__ == "__main__":
     main()

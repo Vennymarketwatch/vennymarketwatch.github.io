@@ -1,196 +1,319 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<title>Market Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Market Dashboard</title>
 
-<style>
-body {
-font-family: Arial;
-background: #0b0b0b;
-color: white;
-text-align: center;
-margin:0;
-}
+  <style>
+    :root{
+      --bg:#0b0f10;
+      --card:rgba(255,255,255,0.04);
+      --border:rgba(255,255,255,0.12);
+      --mint:#8fffe2;
+      --text:#d7e7e2;
+      --muted:rgba(215,231,226,0.65);
+    }
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    }
+    .container{
+      max-width:1200px;
+      margin:0 auto;
+      padding:28px 16px 60px;
+    }
+    h1{
+      text-align:center;
+      color:var(--mint);
+      margin:8px 0 8px;
+      font-size:44px;
+      letter-spacing:0.5px;
+    }
+    .subtitle{
+      text-align:center;
+      margin:0 0 26px;
+      color:var(--muted);
+    }
+    .section{
+      margin:18px 0;
+      padding:18px;
+      border-radius:18px;
+      background:var(--card);
+      border:1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+    .section h2{
+      margin:0 0 12px;
+      font-size:26px;
+      color:#e9fffa;
+      text-align:center;
+    }
 
-h1 {
-color: #00ffcc;
-margin-top:30px;
-}
+    /* Picks charts */
+    .pager{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:center;
+      margin:10px 0 16px;
+    }
+    .pager button{
+      padding:8px 14px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.06);
+      color:#d8fff2;
+      cursor:pointer;
+    }
+    .pager button:disabled{ opacity:0.4; cursor:not-allowed; }
 
-.section {
-margin: 40px auto;
-width: 90%;
-max-width: 1200px;
-}
+    .charts-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    .chart-card{
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      padding:10px;
+    }
+    .chart-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-weight:800;
+      margin:0 0 8px 0;
+      color:var(--mint);
+      letter-spacing:0.2px;
+    }
+    .chart-box{
+      width:100%;
+      height:320px;
+    }
 
-h2 {
-color:#ccc;
-margin-bottom:20px;
-}
-</style>
+    .two-col{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+
+    @media (max-width: 980px){
+      .charts-grid{ grid-template-columns: 1fr; }
+      .two-col{ grid-template-columns: 1fr; }
+      .chart-box{ height:360px; }
+      h1{ font-size:34px; }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="container">
+    <h1>Market Dashboard</h1>
+    <div class="subtitle">My daily scan picks + macro snapshot</div>
 
-<h1>Market Dashboard</h1>
-  <div class="section" style="text-align:left;">
-  <h2 style="text-align:center;">My Template Picks</h2>
+    <!-- ===== My Picks Charts (Top) ===== -->
+    <div class="section">
+      <h2>My Picks Charts (6 per page)</h2>
 
-  <div id="picksMeta" style="color:#aaa; font-size:13px; text-align:center; margin-bottom:12px;">
-    Loading picks.json…
+      <div class="pager">
+        <button id="prevPage" type="button">Prev</button>
+        <div id="pageInfo">Loading picks.json...</div>
+        <button id="nextPage" type="button">Next</button>
+      </div>
+
+      <div id="chartsGrid" class="charts-grid"></div>
+    </div>
+
+    <!-- ===== Macro Snapshot ===== -->
+    <div class="section">
+      <h2>Macro Snapshot</h2>
+
+      <div class="two-col">
+        <div class="chart-card">
+          <div class="chart-title"><span>Fed Funds Rate</span><span style="opacity:.75;font-weight:600;">1D</span></div>
+          <div class="chart-box" id="fedFunds"></div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-title"><span>US CPI</span><span style="opacity:.75;font-weight:600;">1D</span></div>
+          <div class="chart-box" id="cpi"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Example Single Chart ===== -->
+    <div class="section">
+      <h2>NVDA Chart</h2>
+      <div class="chart-card">
+        <div class="chart-title"><span>NVDA</span><span style="opacity:.75;font-weight:600;">1D</span></div>
+        <div class="chart-box" id="nvda"></div>
+      </div>
+    </div>
+
+    <!-- ===== Heatmap ===== -->
+    <div class="section">
+      <h2>Market Heatmap</h2>
+      <div id="heatmap"></div>
+    </div>
+
   </div>
 
-  <div style="overflow:auto; border:1px solid #222; border-radius:12px;">
-    <table style="width:100%; border-collapse:collapse; min-width:760px;">
-      <thead>
-        <tr style="background:#111;">
-          <th style="padding:12px; text-align:left; border-bottom:1px solid #222;">Ticker</th>
-          <th style="padding:12px; text-align:right; border-bottom:1px solid #222;">Price</th>
-          <th style="padding:12px; text-align:right; border-bottom:1px solid #222;">500d Drop</th>
-          <th style="padding:12px; text-align:right; border-bottom:1px solid #222;">Distance to 80d High</th>
-          <th style="padding:12px; text-align:right; border-bottom:1px solid #222;">80d Base Height</th>
-          <th style="padding:12px; text-align:right; border-bottom:1px solid #222;">MA250</th>
-        </tr>
-      </thead>
-      <tbody id="picksBody">
-        <tr>
-          <td colspan="6" style="padding:14px; color:#888;">Loading…</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <!-- TradingView Widgets -->
+  <script>
+    function addTVWidgetAdvanced(containerId, symbol){
+      const el = document.getElementById(containerId);
+      if(!el) return;
 
-  <div style="color:#777; font-size:12px; margin-top:10px; line-height:1.5;">
-    Tip: Click a ticker to open TradingView chart in a new tab.
-  </div>
-</div>
+      const s = document.createElement("script");
+      s.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+      s.async = true;
+      s.textContent = JSON.stringify({
+        autosize: true,
+        symbol: symbol,
+        interval: "D",
+        timezone: "Etc/UTC",
+        theme: "dark",
+        style: "1",
+        locale: "en",
+        hide_top_toolbar: true,
+        hide_legend: true,
+        allow_symbol_change: false,
+        save_image: false,
+        withdateranges: false,
+        container_id: containerId
+      });
+      el.appendChild(s);
+    }
 
-<script>
-  function fmt(n, digits=2) {
-    if (n === null || n === undefined || Number.isNaN(n)) return "—";
-    return Number(n).toFixed(digits);
-  }
-  function pct(n, digits=1) {
-    if (n === null || n === undefined || Number.isNaN(n)) return "—";
-    return Number(n).toFixed(digits) + "%";
-  }
-  function safeNum(x) {
-    const v = Number(x);
-    return Number.isFinite(v) ? v : null;
-  }
+    function addTVHeatmap(containerId){
+      const el = document.getElementById(containerId);
+      if(!el) return;
 
-  async function loadPicks() {
-    const metaEl = document.getElementById("picksMeta");
-    const bodyEl = document.getElementById("picksBody");
+      const s = document.createElement("script");
+      s.src = "https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js";
+      s.async = true;
+      s.textContent = JSON.stringify({
+        dataSource: "SPX500",
+        blockSize: "market_cap_basic",
+        blockColor: "change",
+        locale: "en",
+        symbolUrl: "",
+        colorTheme: "dark",
+        hasTopBar: false,
+        isDataSetEnabled: false,
+        isZoomEnabled: true,
+        hasSymbolTooltip: true,
+        width: "100%",
+        height: 400
+      });
+      el.appendChild(s);
+    }
 
-    try {
-      const res = await fetch("picks.json?v=" + Date.now(), { cache: "no-store" });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      const data = await res.json();
+    // Macro + NVDA + heatmap
+    document.addEventListener("DOMContentLoaded", () => {
+      addTVWidgetAdvanced("fedFunds", "FRED:EFFR");
+      addTVWidgetAdvanced("cpi", "ECONOMICS:USCPI");
+      addTVWidgetAdvanced("nvda", "NASDAQ:NVDA");
+      addTVHeatmap("heatmap");
+    });
+  </script>
 
-      const updated = data.updated_utc || "—";
-      const count = data.count ?? (data.results ? data.results.length : 0);
-      metaEl.textContent = `Updated: ${updated} | Matches: ${count}`;
+  <!-- Picks charts (pagination, 6 per page) -->
+  <script>
+    (function(){
+      const PAGE_SIZE = 6;
+      let allTickers = [];
+      let page = 1;
 
-      const rows = data.results || [];
-      if (!rows.length) {
-        bodyEl.innerHTML = `<tr><td colspan="6" style="padding:14px; color:#888;">No matches today.</td></tr>`;
-        return;
+      function $(id){ return document.getElementById(id); }
+      function clearNode(el){ while(el && el.firstChild) el.removeChild(el.firstChild); }
+
+      function renderPage(){
+        const grid = $("chartsGrid");
+        const info = $("pageInfo");
+        const prevBtn = $("prevPage");
+        const nextBtn = $("nextPage");
+        if(!grid || !info || !prevBtn || !nextBtn) return;
+
+        const totalPages = Math.max(1, Math.ceil(allTickers.length / PAGE_SIZE));
+        page = Math.min(Math.max(1, page), totalPages);
+
+        const start = (page - 1) * PAGE_SIZE;
+        const items = allTickers.slice(start, start + PAGE_SIZE);
+
+        info.textContent = `Page ${page} / ${totalPages}  |  Total: ${allTickers.length}`;
+        prevBtn.disabled = (page <= 1);
+        nextBtn.disabled = (page >= totalPages);
+
+        clearNode(grid);
+
+        items.forEach(t => {
+          const card = document.createElement("div");
+          card.className = "chart-card";
+
+          const title = document.createElement("div");
+          title.className = "chart-title";
+          title.innerHTML = `<span>${t}</span><span style="opacity:.75;font-weight:600;">1D</span>`;
+
+          const box = document.createElement("div");
+          const id = `tv_${t}_${page}_${Math.random().toString(16).slice(2)}`;
+          box.id = id;
+          box.className = "chart-box";
+
+          card.appendChild(title);
+          card.appendChild(box);
+          grid.appendChild(card);
+
+          const s = document.createElement("script");
+          s.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+          s.async = true;
+          s.textContent = JSON.stringify({
+            autosize: true,
+            symbol: t,               // if needed: "NASDAQ:"+t
+            interval: "D",
+            timezone: "Etc/UTC",
+            theme: "dark",
+            style: "1",
+            locale: "en",
+            hide_top_toolbar: true,
+            hide_legend: true,
+            allow_symbol_change: false,
+            save_image: false,
+            withdateranges: false,
+            container_id: id
+          });
+          card.appendChild(s);
+        });
       }
 
-      bodyEl.innerHTML = rows.map(r => {
-        const ticker = r.ticker || "—";
-        const price = safeNum(r.price);
-        const ma250 = safeNum(r.ma250);
-        const drop = safeNum(r.drop_pct_500d);
-
-        const baseHigh = safeNum(r.base_high_80d);
-        const baseHeight = safeNum(r.base_height_pct);
-
-        let dist = "—";
-        if (price && baseHigh) {
-          const belowPct = (baseHigh - price) / baseHigh * 100;
-          dist = belowPct >= 0 ? belowPct.toFixed(1) + "% below" : "Above";
+      async function loadPicks(){
+        try{
+          const r = await fetch("./picks.json?v=" + Date.now());
+          const j = await r.json();
+          const results = j.results || [];
+          allTickers = results.map(x => (typeof x === "string" ? x : x.ticker)).filter(Boolean);
+          renderPage();
+        }catch(e){
+          console.error(e);
+          const info = $("pageInfo");
+          if(info) info.textContent = "Failed to load picks.json (check Console).";
         }
+      }
 
-        // For US stocks. If later you scan other markets, we can map symbol format.
-        const tvUrl = `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(ticker)}`;
-
-        return `
-          <tr style="border-bottom:1px solid #1f1f1f;">
-            <td style="padding:12px;">
-              <a href="${tvUrl}" target="_blank" rel="noopener" style="color:#00ffcc; text-decoration:none; font-weight:700;">
-                ${ticker}
-              </a>
-            </td>
-            <td style="padding:12px; text-align:right;">${price ? fmt(price, 2) : "—"}</td>
-            <td style="padding:12px; text-align:right;">${drop !== null ? pct(drop, 1) : "—"}</td>
-            <td style="padding:12px; text-align:right;">${dist}</td>
-            <td style="padding:12px; text-align:right;">${baseHeight !== null ? pct(baseHeight, 1) : "—"}</td>
-            <td style="padding:12px; text-align:right;">${ma250 ? fmt(ma250, 2) : "—"}</td>
-          </tr>
-        `;
-      }).join("");
-
-    } catch (err) {
-      console.error(err);
-      metaEl.textContent = "Could not load picks.json (check it is in repo root).";
-      bodyEl.innerHTML = `
-        <tr><td colspan="6" style="padding:14px; color:#ff8a8a;">
-          Error loading picks.json. Please ensure picks.json is in the same folder as index.html.
-        </td></tr>
-      `;
-    }
-  }
-
-  loadPicks();
-</script>
-
-<div class="section">
-<h2>Fed Funds Rate</h2>
-
-<script src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js">
-{
-"symbol": "FRED:FEDFUNDS",
-"width": "100%",
-"height": "350",
-"theme": "dark",
-"style": "1"
-}
-</script>
-
-</div>
-
-<div class="section">
-<h2>US CPI</h2>
-
-<script src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js">
-{
-"symbol": "FRED:CPIAUCSL",
-"width": "100%",
-"height": "350",
-"theme": "dark",
-"style": "1"
-}
-</script>
-
-</div>
-
-<div class="section">
-<h2>NVIDIA Chart</h2>
-
-<script src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js">
-{
-"symbol": "NASDAQ:NVDA",
-"width": "100%",
-"height": "450",
-"theme": "dark",
-"style": "1"
-}
-</script>
-
-</div>
+      document.addEventListener("DOMContentLoaded", () => {
+        const prevBtn = $("prevPage");
+        const nextBtn = $("nextPage");
+        if(prevBtn) prevBtn.addEventListener("click", () => { page--; renderPage(); });
+        if(nextBtn) nextBtn.addEventListener("click", () => { page++; renderPage(); });
+        loadPicks();
+      });
+    })();
+  </script>
 
 </body>
 </html>

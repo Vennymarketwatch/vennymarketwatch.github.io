@@ -3,7 +3,7 @@ name: Daily US Close Scan
 on:
   workflow_dispatch:
   schedule:
-    # 每15分钟跑一次（周一到周五），由 run_if_after_close.py 判断是否到“收盘+15分钟”
+    # 每15分钟跑一次（周一到周五，UTC），由 run_if_after_close.py 判断是否到“收盘+15分钟”
     - cron: "0,15,30,45 * * * 1-5"
 
 permissions:
@@ -26,23 +26,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # ✅ 关键：恢复/保存扫描缓存（加速 yfinance 抓取）
+      # ✅ 恢复 data_cache（用于加速）
       - name: Restore cache (data_cache)
         uses: actions/cache@v4
         with:
           path: data_cache
-          key: data-cache-v1
+          key: data-cache-${{ runner.os }}-${{ github.run_id }}
           restore-keys: |
-            data-cache-v1
-
-      # ✅ 关键：恢复/保存“今日是否已跑过”的状态文件（否则每次都会认为没跑过）
-      - name: Restore cache (last_run.json)
-        uses: actions/cache@v4
-        with:
-          path: .github/last_run.json
-          key: last-run-v1
-          restore-keys: |
-            last-run-v1
+            data-cache-${{ runner.os }}-
 
       - name: Run after close gate (runs scan.py inside if needed)
         run: |

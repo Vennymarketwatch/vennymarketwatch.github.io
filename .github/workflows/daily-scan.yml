@@ -3,11 +3,15 @@ name: Daily US Close Scan
 on:
   workflow_dispatch:
   schedule:
-    # 每小时跑一次（周一到周五，UTC），由 run_if_after_close.py 判断是否到“收盘+15分钟”
+    # 每小时跑一次（周一到周五，UTC），由脚本判断是否到“收盘+15分钟”
     - cron: "0 * * * 1-5"
 
 permissions:
   contents: write
+
+concurrency:
+  group: daily-scan-main
+  cancel-in-progress: true
 
 jobs:
   scan:
@@ -15,6 +19,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -26,20 +32,27 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # ✅ 恢复 data_cache（用于加速）
       - name: Restore cache (data_cache)
         uses: actions/cache@v4
         with:
           path: data_cache
-          key: data-cache-${{ github.run_id }}
+          key: data-cache-v1
           restore-keys: |
-            data-cache-
+            data-cache-v1
+
+      - name: Restore cache (last_run.json)
+        uses: actions/cache@v4
+        with:
+          path: .github/last_run.json
+          key: last-run-v1
+          restore-keys: |
+            last-run-v1
 
       - name: Run after close gate (runs scan.py inside if needed)
         run: |
           python .github/scripts/run_if_after_close.py
 
-           - name: Commit updated JSON (if changed)
+      - name: Commit updated JSON (if changed)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -51,10 +64,6 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Daily scan update" || true
-
-          # ✅ 关键：先把远端最新内容 rebase 进来，再 push，避免 fetch first
+          git commit -m "Daily scan update"
           git pull --rebase origin main
-
-          # ✅ 关键：push（rebase 后通常就是 fast-forward）
-          git push origin HEAD:main
+          git push

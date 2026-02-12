@@ -1,9 +1,11 @@
 name: Daily US Close Scan
 
 on:
-  schedule:
-    - cron: "*/15 * * * 1-5"
   workflow_dispatch:
+  schedule:
+    # 每天多跑几次没关系：我们后面用 run_if_after_close.py 来决定“是否该跑”
+    # 这样自动处理美股夏令时/冬令时（DST）
+    - cron: "0,15,30,45 * * * 1-5"
 
 permissions:
   contents: write
@@ -13,29 +15,54 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.11"
 
       - name: Install deps
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run scan after US close
+      # ✅ 关键：恢复/保存缓存（下次就不会从头抓所有历史数据）
+      - name: Restore cache (data_cache)
+        uses: actions/cache@v4
+        with:
+          path: data_cache
+          key: data-cache-v1
+          restore-keys: |
+            data-cache-v1
+
+      # ✅ 用“是否已收盘+15分钟”的逻辑来决定要不要真正执行 scan
+      - name: Run only after US close + 15m (DST-safe)
         run: |
           python .github/scripts/run_if_after_close.py
 
-      - name: Commit & push if changed
+      # ✅ 执行扫描（run_if_after_close.py 内部会触发/调用 scan.py；如果你脚本不是这样写的，看下方备注）
+      # 如果 run_if_after_close.py 只是“判断并退出”，那就把下面两行改成：
+      #   python scan.py
+      #   python scan.py  (你自己决定是否也生成 sectors.json)
+      #
+      # - name: Run scan
+      #   run: |
+      #     python scan.py
+
+      - name: Commit updated JSON (if changed)
         run: |
-          if git diff --quiet; then
-            echo "No changes"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add picks.json sectors.json || true
+
+          # 如果没变化就不提交，避免每天空提交
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
             exit 0
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "actions@github.com"
-          git add picks.json sectors.json
-          git commit -m "Auto daily scan update"
+
+          git commit -m "Daily scan update"
           git push

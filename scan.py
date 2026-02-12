@@ -64,11 +64,11 @@ os.makedirs(CACHE_DIR, exist_ok=True)
 
 # Model parameters (updated per your request)
 WINDOW_BARS = 500
-MIN_DROP_PCT = 30.0                 # from highest close to lowest close in window
+MIN_DROP_PCT = 40.0                 # from highest close to lowest close in window
 RECENT_NO_BREAK_LOW_BARS = 100      # last 100 bars cannot break window low
 EMA_CROSS_LOOKBACK = 150            # last 150 bars must have a cross up above EMA250
 EMA_DISTANCE_MAX_PCT = 30.0         # |close - EMA250| / EMA250 < 30%
-RECENT_HIGH_LOOKBACK = 90           # close must be below recent 90-day high
+RECENT_HIGH_LOOKBACK = 120           # close must be below recent 90-day high
 
 # EMA lengths
 EMA20 = 20
@@ -388,12 +388,15 @@ def scan_shape(ticker: str) -> Optional[Dict]:
     ema250_w = ema250.tail(WINDOW_BARS)
 
     bear = (
-        (window["Close"] < ema20_w) &
-        (window["Close"] < ema60_w) &
-        (window["Close"] < ema120_w) &
-        (window["Close"] < ema250_w)
-    )
-    if not bool(bear.any()):
+    (window["Close"] < ema20_w) &
+    (window["Close"] < ema60_w) &
+    (window["Close"] < ema120_w) &
+    (window["Close"] < ema250_w)
+)
+
+# NEW: 在500天窗口内，至少出现过连续5个交易日同时低于所有EMA
+    max_consecutive_bear = safe_float(bear.rolling(7).sum().max())
+    if max_consecutive_bear is None or max_consecutive_bear < 7:
         return None
 
     # -------------------------
@@ -434,17 +437,17 @@ def scan_shape(ticker: str) -> Optional[Dict]:
     # -------------------------
     # 15) Current price BELOW recent 90-day high (no 90% threshold)
     # -------------------------
-    high90 = safe_float(df.tail(RECENT_HIGH_LOOKBACK)["Close"].max())
-    if high90 is None or high90 <= 0:
+    high120 = safe_float(df.tail(RECENT_HIGH_LOOKBACK)["Close"].max())
+    if high120 is None or high120 <= 0:
         return None
-    if close_last >= high90:
+    if close_last >= high120:
         return None
 
     # If passed all filters, return result
     return {
         "ticker": ticker,
         "close": round(close_last, 2),
-        "high90": round(high90, 2),
+        "high120": round(high120, 2),
         "drop500_pct": round(drop_pct, 2),
         "ema60": round(ema60_last, 2),
         "ema120": round(ema120_last, 2),
@@ -484,9 +487,9 @@ def main():
 
     # Sort: closest to high90 first, then dollar volume
     def sort_key(x: Dict) -> tuple:
-        high90 = x.get("high90") or 0
+        high120 = x.get("high90") or 0
         close = x.get("close") or 0
-        ratio = (close / high90) if high90 else 0
+        ratio = (close / high90) if high120 else 0
         return (ratio, x.get("dollar_vol", 0))
 
     results.sort(key=sort_key, reverse=True)

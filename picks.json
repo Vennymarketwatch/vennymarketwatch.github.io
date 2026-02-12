@@ -1,7 +1,7 @@
 {
-  "updated_utc": "2026-02-12 06:07:01 UTC",
+  "updated_utc": "2026-02-12 07:57:36 UTC",
   "universe_size": 2586,
-  "found": 192,
+  "found": 189,
   "failed": 0,
   "params": {
     "WINDOW_BARS": 500,
@@ -175,7 +175,7 @@
       "ema250": 103.46,
       "ema250_dist_pct": 21.11,
       "dollar_vol": 631424546,
-      "marketCap": null
+      "marketCap": 17687080960
     },
     {
       "ticker": "CCL",
@@ -295,7 +295,7 @@
       "ema250": 21.8,
       "ema250_dist_pct": 5.28,
       "dollar_vol": 379728417,
-      "marketCap": null
+      "marketCap": 10448159744
     },
     {
       "ticker": "HPE",
@@ -367,7 +367,7 @@
       "ema250": 25.38,
       "ema250_dist_pct": 20.21,
       "dollar_vol": 315278138,
-      "marketCap": null
+      "marketCap": 10827646976
     },
     {
       "ticker": "EHC",
@@ -475,7 +475,7 @@
       "ema250": 338.61,
       "ema250_dist_pct": 14.79,
       "dollar_vol": 250737463,
-      "marketCap": null
+      "marketCap": 10355461120
     },
     {
       "ticker": "AR",
@@ -487,7 +487,7 @@
       "ema250": 34.01,
       "ema250_dist_pct": 3.24,
       "dollar_vol": 240022497,
-      "marketCap": null
+      "marketCap": 10831790080
     },
     {
       "ticker": "TTEK",
@@ -547,7 +547,7 @@
       "ema250": 15.56,
       "ema250_dist_pct": 23.13,
       "dollar_vol": 210093230,
-      "marketCap": null
+      "marketCap": 4445921280
     },
     {
       "ticker": "NDSN",
@@ -595,7 +595,7 @@
       "ema250": 17.74,
       "ema250_dist_pct": 14.36,
       "dollar_vol": 181692900,
-      "marketCap": null
+      "marketCap": 10529710080
     },
     {
       "ticker": "EAT",
@@ -607,7 +607,7 @@
       "ema250": 141.17,
       "ema250_dist_pct": 17.92,
       "dollar_vol": 169033639,
-      "marketCap": null
+      "marketCap": 7396464640
     },
     {
       "ticker": "WMS",
@@ -631,7 +631,7 @@
       "ema250": 173.78,
       "ema250_dist_pct": 25.05,
       "dollar_vol": 159331690,
-      "marketCap": null
+      "marketCap": 8864212992
     },
     {
       "ticker": "SWK",
@@ -655,7 +655,7 @@
       "ema250": 29.73,
       "ema250_dist_pct": 20.31,
       "dollar_vol": 157151920,
-      "marketCap": null
+      "marketCap": 4143864576
     },
     {
       "ticker": "AAON",
@@ -667,7 +667,7 @@
       "ema250": 90.33,
       "ema250_dist_pct": 13.72,
       "dollar_vol": 152508385,
-      "marketCap": null
+      "marketCap": 8385450496
     },
     {
       "ticker": "PNFP",
@@ -691,7 +691,7 @@
       "ema250": 16.67,
       "ema250_dist_pct": 24.83,
       "dollar_vol": 144556661,
-      "marketCap": null
+      "marketCap": 8142189568
     },
     {
       "ticker": "BEN",
@@ -703,7 +703,7 @@
       "ema250": 23.49,
       "ema250_dist_pct": 17.26,
       "dollar_vol": 143169081,
-      "marketCap": null
+      "marketCap": 14364312576
     },
     {
       "ticker": "CNM",
@@ -727,7 +727,7 @@
       "ema250": 17.81,
       "ema250_dist_pct": 22.0,
       "dollar_vol": 133433062,
-      "marketCap": null
+      "marketCap": 5777639936
     },
     {
       "ticker": "ZION",
@@ -739,7 +739,7 @@
       "ema250": 54.51,
       "ema250_dist_pct": 15.41,
       "dollar_vol": 132664607,
-      "marketCap": null
+      "marketCap": 9288849408
     },
     {
       "ticker": "CGNX",
@@ -751,7 +751,7 @@
       "ema250": 38.76,
       "ema250_dist_pct": 11.0,
       "dollar_vol": 131271617,
-      "marketCap": null
+      "marketCap": 7211743744
     },
     {
       "ticker": "MGM",
@@ -763,7 +763,7 @@
       "ema250": 35.1,
       "ema250_dist_pct": 3.59,
       "dollar_vol": 131081438,
-      "marketCap": null
+      "marketCap": 9944693760
     },
     {
       "ticker": "CYTK",
@@ -775,7 +775,7 @@
       "ema250": 53.6,
       "ema250_dist_pct": 24.63,
       "dollar_vol": 130453725,
-      "marketCap": null
+      "marketCap": 8167297536
     },
     {
       "ticker": "STNE",
@@ -787,7 +787,7 @@
       "ema250": 15.04,
       "ema250_dist_pct": 17.49,
       "dollar_vol": 128255928,
-      "marketCap": null
+      "marketCap": 4727156224
     },
     {
       "ticker": "AAP",
@@ -799,7 +799,7 @@
       "ema250": 50.23,
       "ema250_dist_pct": 18.72,
       "dollar_vol": 127632054,
-      "marketCap": null
+      "marketCap": 3579126528
     },
     {
       "ticker": "CRUS",
@@ -811,7 +811,7 @@
       "ema250": 116.54,
       "ema250_dist_pct": 21.14,
       "dollar_vol": 124944293,
-      "marketCap": null
+      "marketCap": 7204469760
     },
     {
       "ticker": "COO",
@@ -847,7 +847,7 @@
       "ema250": 89.71,
       "ema250_dist_pct": 8.13,
       "dollar_vol": 120011073,
-      "marketCap": null
+      "marketCap": 6756112384
     },
     {
       "ticker": "ALK",
@@ -859,7 +859,7 @@
       "ema250": 50.8,
       "ema250_dist_pct": 13.2,
       "dollar_vol": 115138000,
-      "marketCap": null
+      "marketCap": 6669345280
     },
     {
       "ticker": "GME",
@@ -871,7 +871,7 @@
       "ema250": 23.48,
       "ema250_dist_pct": 3.11,
       "dollar_vol": 114915181,
-      "marketCap": null
+      "marketCap": 10846309376
     },
     {
       "ticker": "FLR",
@@ -883,7 +883,7 @@
       "ema250": 44.31,
       "ema250_dist_pct": 6.83,
       "dollar_vol": 114643278,
-      "marketCap": null
+      "marketCap": 7653191168
     },
     {
       "ticker": "HALO",
@@ -895,7 +895,7 @@
       "ema250": 64.88,
       "ema250_dist_pct": 22.55,
       "dollar_vol": 113214292,
-      "marketCap": null
+      "marketCap": 9350137856
     },
     {
       "ticker": "HRI",
@@ -907,7 +907,7 @@
       "ema250": 144.44,
       "ema250_dist_pct": 25.18,
       "dollar_vol": 106912951,
-      "marketCap": null
+      "marketCap": 6015496704
     },
     {
       "ticker": "BJ",
@@ -931,7 +931,7 @@
       "ema250": 22.43,
       "ema250_dist_pct": 18.17,
       "dollar_vol": 104637621,
-      "marketCap": null
+      "marketCap": 6847012864
     },
     {
       "ticker": "CNR",
@@ -943,7 +943,7 @@
       "ema250": 85.0,
       "ema250_dist_pct": 9.02,
       "dollar_vol": 103188042,
-      "marketCap": null
+      "marketCap": 4769865728
     },
     {
       "ticker": "OLN",
@@ -955,7 +955,7 @@
       "ema250": 25.03,
       "ema250_dist_pct": 5.17,
       "dollar_vol": 102755910,
-      "marketCap": null
+      "marketCap": 3003678464
     },
     {
       "ticker": "CR",
@@ -967,7 +967,7 @@
       "ema250": 180.33,
       "ema250_dist_pct": 11.25,
       "dollar_vol": 101167623,
-      "marketCap": null
+      "marketCap": 11554511872
     },
     {
       "ticker": "CNX",
@@ -979,7 +979,7 @@
       "ema250": 33.64,
       "ema250_dist_pct": 18.81,
       "dollar_vol": 100608490,
-      "marketCap": null
+      "marketCap": 5691834368
     },
     {
       "ticker": "EWBC",
@@ -1003,7 +1003,7 @@
       "ema250": 53.33,
       "ema250_dist_pct": 15.44,
       "dollar_vol": 97545350,
-      "marketCap": null
+      "marketCap": 3068752640
     },
     {
       "ticker": "GPOR",
@@ -1015,7 +1015,7 @@
       "ema250": 185.69,
       "ema250_dist_pct": 8.4,
       "dollar_vol": 97102292,
-      "marketCap": null
+      "marketCap": 3888282624
     },
     {
       "ticker": "AEO",
@@ -1027,7 +1027,7 @@
       "ema250": 18.51,
       "ema250_dist_pct": 28.79,
       "dollar_vol": 93726960,
-      "marketCap": null
+      "marketCap": 4041166080
     },
     {
       "ticker": "LEA",
@@ -1039,7 +1039,7 @@
       "ema250": 108.25,
       "ema250_dist_pct": 28.3,
       "dollar_vol": 92896835,
-      "marketCap": null
+      "marketCap": 7389262848
     },
     {
       "ticker": "MTH",
@@ -1051,7 +1051,7 @@
       "ema250": 72.93,
       "ema250_dist_pct": 7.01,
       "dollar_vol": 91154598,
-      "marketCap": null
+      "marketCap": 5495243264
     },
     {
       "ticker": "ONB",
@@ -1063,7 +1063,7 @@
       "ema250": 21.86,
       "ema250_dist_pct": 14.0,
       "dollar_vol": 89771808,
-      "marketCap": null
+      "marketCap": 9738062848
     },
     {
       "ticker": "HP",
@@ -1075,7 +1075,7 @@
       "ema250": 26.61,
       "ema250_dist_pct": 28.95,
       "dollar_vol": 87807719,
-      "marketCap": null
+      "marketCap": 3412774912
     },
     {
       "ticker": "SYNA",
@@ -1087,7 +1087,7 @@
       "ema250": 73.53,
       "ema250_dist_pct": 23.42,
       "dollar_vol": 87129075,
-      "marketCap": null
+      "marketCap": 3538349056
     },
     {
       "ticker": "TMDX",
@@ -1099,7 +1099,7 @@
       "ema250": 118.94,
       "ema250_dist_pct": 12.07,
       "dollar_vol": 87058231,
-      "marketCap": null
+      "marketCap": 4555437568
     },
     {
       "ticker": "JAZZ",
@@ -1111,7 +1111,7 @@
       "ema250": 140.1,
       "ema250_dist_pct": 18.66,
       "dollar_vol": 86727410,
-      "marketCap": null
+      "marketCap": 10101593088
     },
     {
       "ticker": "UTHR",
@@ -1135,7 +1135,7 @@
       "ema250": 46.44,
       "ema250_dist_pct": 4.46,
       "dollar_vol": 84780924,
-      "marketCap": null
+      "marketCap": 6039224320
     },
     {
       "ticker": "RRR",
@@ -1147,7 +1147,7 @@
       "ema250": 56.73,
       "ema250_dist_pct": 14.36,
       "dollar_vol": 81904865,
-      "marketCap": null
+      "marketCap": 6676440064
     },
     {
       "ticker": "UGI",
@@ -1159,7 +1159,7 @@
       "ema250": 34.59,
       "ema250_dist_pct": 10.21,
       "dollar_vol": 81172725,
-      "marketCap": null
+      "marketCap": 8188419584
     },
     {
       "ticker": "OPCH",
@@ -1171,7 +1171,7 @@
       "ema250": 30.72,
       "ema250_dist_pct": 12.86,
       "dollar_vol": 79775665,
-      "marketCap": null
+      "marketCap": 5626769408
     },
     {
       "ticker": "WAL",
@@ -1183,7 +1183,7 @@
       "ema250": 82.27,
       "ema250_dist_pct": 15.26,
       "dollar_vol": 79391677,
-      "marketCap": null
+      "marketCap": 10436388864
     },
     {
       "ticker": "JBLU",
@@ -1195,7 +1195,7 @@
       "ema250": 5.08,
       "ema250_dist_pct": 14.48,
       "dollar_vol": 76943572,
-      "marketCap": null
+      "marketCap": 2113159296
     },
     {
       "ticker": "QRVO",
@@ -1207,7 +1207,7 @@
       "ema250": 85.39,
       "ema250_dist_pct": 0.5,
       "dollar_vol": 72998491,
-      "marketCap": null
+      "marketCap": 7956001280
     },
     {
       "ticker": "SEE",
@@ -1219,7 +1219,7 @@
       "ema250": 36.49,
       "ema250_dist_pct": 14.75,
       "dollar_vol": 72527212,
-      "marketCap": null
+      "marketCap": 6166242816
     },
     {
       "ticker": "ARRY",
@@ -1231,7 +1231,7 @@
       "ema250": 8.55,
       "ema250_dist_pct": 29.85,
       "dollar_vol": 72448592,
-      "marketCap": null
+      "marketCap": 1695500160
     },
     {
       "ticker": "PAGS",
@@ -1243,7 +1243,7 @@
       "ema250": 9.57,
       "ema250_dist_pct": 16.69,
       "dollar_vol": 72098999,
-      "marketCap": null
+      "marketCap": 3260205312
     },
     {
       "ticker": "JBTM",
@@ -1255,7 +1255,7 @@
       "ema250": 136.11,
       "ema250_dist_pct": 21.49,
       "dollar_vol": 71435520,
-      "marketCap": null
+      "marketCap": 8593986560
     },
     {
       "ticker": "WEX",
@@ -1267,7 +1267,7 @@
       "ema250": 158.21,
       "ema250_dist_pct": 4.72,
       "dollar_vol": 69283193,
-      "marketCap": null
+      "marketCap": 5680579584
     },
     {
       "ticker": "WTFC",
@@ -1279,7 +1279,7 @@
       "ema250": 131.05,
       "ema250_dist_pct": 17.65,
       "dollar_vol": 68625514,
-      "marketCap": null
+      "marketCap": 10326191104
     },
     {
       "ticker": "PCVX",
@@ -1291,7 +1291,7 @@
       "ema250": 48.97,
       "ema250_dist_pct": 13.03,
       "dollar_vol": 67405228,
-      "marketCap": null
+      "marketCap": 7945838592
     },
     {
       "ticker": "ACLS",
@@ -1303,7 +1303,7 @@
       "ema250": 82.77,
       "ema250_dist_pct": 10.94,
       "dollar_vol": 65476841,
-      "marketCap": null
+      "marketCap": 2846340352
     },
     {
       "ticker": "SKY",
@@ -1315,7 +1315,7 @@
       "ema250": 81.15,
       "ema250_dist_pct": 12.91,
       "dollar_vol": 65086849,
-      "marketCap": null
+      "marketCap": 5117735936
     },
     {
       "ticker": "GFF",
@@ -1327,7 +1327,7 @@
       "ema250": 75.29,
       "ema250_dist_pct": 24.77,
       "dollar_vol": 64752843,
-      "marketCap": null
+      "marketCap": 4375647744
     },
     {
       "ticker": "COLB",
@@ -1339,7 +1339,7 @@
       "ema250": 26.64,
       "ema250_dist_pct": 18.74,
       "dollar_vol": 64376537,
-      "marketCap": null
+      "marketCap": 9461195776
     },
     {
       "ticker": "CSW",
@@ -1351,7 +1351,7 @@
       "ema250": 287.58,
       "ema250_dist_pct": 11.97,
       "dollar_vol": 64144393,
-      "marketCap": null
+      "marketCap": 5373286912
     },
     {
       "ticker": "GMED",
@@ -1363,7 +1363,7 @@
       "ema250": 74.27,
       "ema250_dist_pct": 18.84,
       "dollar_vol": 63564853,
-      "marketCap": null
+      "marketCap": 11920152576
     },
     {
       "ticker": "MUR",
@@ -1375,7 +1375,7 @@
       "ema250": 29.32,
       "ema250_dist_pct": 16.79,
       "dollar_vol": 62864643,
-      "marketCap": null
+      "marketCap": 4887377408
     },
     {
       "ticker": "GLNG",
@@ -1387,19 +1387,7 @@
       "ema250": 38.8,
       "ema250_dist_pct": 13.92,
       "dollar_vol": 62454601,
-      "marketCap": null
-    },
-    {
-      "ticker": "DJCO",
-      "close": 558.0,
-      "high120": 664.72,
-      "drop500_pct": 51.56,
-      "ema60": 543.66,
-      "ema120": 503.29,
-      "ema250": 469.53,
-      "ema250_dist_pct": 18.84,
-      "dollar_vol": 62105400,
-      "marketCap": null
+      "marketCap": 4525549568
     },
     {
       "ticker": "UMBF",
@@ -1411,7 +1399,7 @@
       "ema250": 112.93,
       "ema250_dist_pct": 17.02,
       "dollar_vol": 60463201,
-      "marketCap": null
+      "marketCap": 10038963200
     },
     {
       "ticker": "FLG",
@@ -1423,7 +1411,7 @@
       "ema250": 12.35,
       "ema250_dist_pct": 13.05,
       "dollar_vol": 59417948,
-      "marketCap": null
+      "marketCap": 5807109632
     },
     {
       "ticker": "ASO",
@@ -1435,7 +1423,7 @@
       "ema250": 51.12,
       "ema250_dist_pct": 16.32,
       "dollar_vol": 59037833,
-      "marketCap": null
+      "marketCap": 3964870144
     },
     {
       "ticker": "CHRD",
@@ -1447,7 +1435,7 @@
       "ema250": 103.12,
       "ema250_dist_pct": 1.01,
       "dollar_vol": 58267106,
-      "marketCap": null
+      "marketCap": 5964004352
     },
     {
       "ticker": "OI",
@@ -1459,7 +1447,7 @@
       "ema250": 13.69,
       "ema250_dist_pct": 13.79,
       "dollar_vol": 57968505,
-      "marketCap": null
+      "marketCap": 2400461568
     },
     {
       "ticker": "CRI",
@@ -1471,7 +1459,7 @@
       "ema250": 36.63,
       "ema250_dist_pct": 3.24,
       "dollar_vol": 56264813,
-      "marketCap": null
+      "marketCap": 1378458368
     },
     {
       "ticker": "VSH",
@@ -1495,7 +1483,7 @@
       "ema250": 34.09,
       "ema250_dist_pct": 26.03,
       "dollar_vol": 50349118,
-      "marketCap": null
+      "marketCap": 3049596672
     },
     {
       "ticker": "DBRG",
@@ -1507,7 +1495,7 @@
       "ema250": 12.44,
       "ema250_dist_pct": 23.87,
       "dollar_vol": 50344469,
-      "marketCap": null
+      "marketCap": 3006718976
     },
     {
       "ticker": "BFH",
@@ -1519,7 +1507,7 @@
       "ema250": 62.78,
       "ema250_dist_pct": 21.11,
       "dollar_vol": 50179799,
-      "marketCap": null
+      "marketCap": 3466968064
     },
     {
       "ticker": "ICUI",
@@ -1531,7 +1519,7 @@
       "ema250": 139.21,
       "ema250_dist_pct": 6.12,
       "dollar_vol": 50095241,
-      "marketCap": null
+      "marketCap": 3646960128
     },
     {
       "ticker": "PLMR",
@@ -1543,7 +1531,7 @@
       "ema250": 124.06,
       "ema250_dist_pct": 6.11,
       "dollar_vol": 49996871,
-      "marketCap": null
+      "marketCap": 3525775360
     },
     {
       "ticker": "GBCI",
@@ -1555,7 +1543,7 @@
       "ema250": 45.64,
       "ema250_dist_pct": 13.27,
       "dollar_vol": 48908200,
-      "marketCap": null
+      "marketCap": 6717968384
     },
     {
       "ticker": "SIG",
@@ -1567,7 +1555,7 @@
       "ema250": 86.29,
       "ema250_dist_pct": 7.03,
       "dollar_vol": 48391399,
-      "marketCap": null
+      "marketCap": 3781627136
     },
     {
       "ticker": "YETI",
@@ -1579,7 +1567,7 @@
       "ema250": 38.91,
       "ema250_dist_pct": 21.97,
       "dollar_vol": 48114947,
-      "marketCap": null
+      "marketCap": 3854901504
     },
     {
       "ticker": "HWC",
@@ -1591,7 +1579,7 @@
       "ema250": 60.43,
       "ema250_dist_pct": 18.18,
       "dollar_vol": 47601908,
-      "marketCap": null
+      "marketCap": 5970813440
     },
     {
       "ticker": "KBH",
@@ -1603,7 +1591,7 @@
       "ema250": 61.35,
       "ema250_dist_pct": 4.18,
       "dollar_vol": 47358326,
-      "marketCap": null
+      "marketCap": 4139758848
     },
     {
       "ticker": "TGNA",
@@ -1615,7 +1603,7 @@
       "ema250": 18.68,
       "ema250_dist_pct": 11.27,
       "dollar_vol": 46952138,
-      "marketCap": null
+      "marketCap": 3348370688
     },
     {
       "ticker": "CPRX",
@@ -1627,7 +1615,7 @@
       "ema250": 22.05,
       "ema250_dist_pct": 8.54,
       "dollar_vol": 46886049,
-      "marketCap": null
+      "marketCap": 2941293312
     },
     {
       "ticker": "COKE",
@@ -1639,7 +1627,7 @@
       "ema250": 134.62,
       "ema250_dist_pct": 18.22,
       "dollar_vol": 46834901,
-      "marketCap": null
+      "marketCap": 10600947712
     },
     {
       "ticker": "MPT",
@@ -1651,7 +1639,7 @@
       "ema250": 5.0,
       "ema250_dist_pct": 13.93,
       "dollar_vol": 46203058,
-      "marketCap": null
+      "marketCap": 3428550144
     },
     {
       "ticker": "NUVL",
@@ -1663,7 +1651,7 @@
       "ema250": 90.08,
       "ema250_dist_pct": 14.51,
       "dollar_vol": 45623245,
-      "marketCap": null
+      "marketCap": 7499697664
     },
     {
       "ticker": "NVAX",
@@ -1675,7 +1663,7 @@
       "ema250": 7.93,
       "ema250_dist_pct": 13.07,
       "dollar_vol": 45190861,
-      "marketCap": null
+      "marketCap": 1457616000
     },
     {
       "ticker": "BC",
@@ -1687,7 +1675,7 @@
       "ema250": 69.48,
       "ema250_dist_pct": 24.82,
       "dollar_vol": 44634784,
-      "marketCap": null
+      "marketCap": 5665486848
     },
     {
       "ticker": "AUB",
@@ -1699,7 +1687,7 @@
       "ema250": 35.0,
       "ema250_dist_pct": 17.13,
       "dollar_vol": 43246800,
-      "marketCap": null
+      "marketCap": 5843244544
     },
     {
       "ticker": "VCTR",
@@ -1711,7 +1699,7 @@
       "ema250": 64.14,
       "ema250_dist_pct": 18.87,
       "dollar_vol": 42623750,
-      "marketCap": null
+      "marketCap": 4951328768
     },
     {
       "ticker": "SHLS",
@@ -1723,7 +1711,7 @@
       "ema250": 7.65,
       "ema250_dist_pct": 28.04,
       "dollar_vol": 42485662,
-      "marketCap": null
+      "marketCap": 1638732544
     },
     {
       "ticker": "LTH",
@@ -1735,7 +1723,7 @@
       "ema250": 27.07,
       "ema250_dist_pct": 9.71,
       "dollar_vol": 42298741,
-      "marketCap": null
+      "marketCap": 6549213696
     },
     {
       "ticker": "DNOW",
@@ -1747,7 +1735,7 @@
       "ema250": 14.51,
       "ema250_dist_pct": 14.2,
       "dollar_vol": 41161536,
-      "marketCap": null
+      "marketCap": 3076411136
     },
     {
       "ticker": "VIRT",
@@ -1759,7 +1747,7 @@
       "ema250": 36.21,
       "ema250_dist_pct": 4.74,
       "dollar_vol": 39963048,
-      "marketCap": null
+      "marketCap": 8089901056
     },
     {
       "ticker": "SXT",
@@ -1771,7 +1759,7 @@
       "ema250": 93.53,
       "ema250_dist_pct": 9.41,
       "dollar_vol": 39264021,
-      "marketCap": null
+      "marketCap": 4347177984
     },
     {
       "ticker": "LAZ",
@@ -1783,7 +1771,7 @@
       "ema250": 50.05,
       "ema250_dist_pct": 9.47,
       "dollar_vol": 38857068,
-      "marketCap": null
+      "marketCap": 5198355456
     },
     {
       "ticker": "XENE",
@@ -1795,7 +1783,7 @@
       "ema250": 39.28,
       "ema250_dist_pct": 8.87,
       "dollar_vol": 38501102,
-      "marketCap": null
+      "marketCap": 3304279296
     },
     {
       "ticker": "BANC",
@@ -1807,7 +1795,7 @@
       "ema250": 17.02,
       "ema250_dist_pct": 19.95,
       "dollar_vol": 38078936,
-      "marketCap": null
+      "marketCap": 3172848128
     },
     {
       "ticker": "SONO",
@@ -1819,7 +1807,7 @@
       "ema250": 14.87,
       "ema250_dist_pct": 11.0,
       "dollar_vol": 37728900,
-      "marketCap": null
+      "marketCap": 1994524672
     },
     {
       "ticker": "BOKF",
@@ -1831,7 +1819,7 @@
       "ema250": 111.25,
       "ema250_dist_pct": 21.85,
       "dollar_vol": 37672123,
-      "marketCap": null
+      "marketCap": 8573854720
     },
     {
       "ticker": "DK",
@@ -1843,7 +1831,7 @@
       "ema250": 28.01,
       "ema250_dist_pct": 23.25,
       "dollar_vol": 36926044,
-      "marketCap": null
+      "marketCap": 2076461184
     },
     {
       "ticker": "TCBI",
@@ -1855,7 +1843,7 @@
       "ema250": 85.54,
       "ema250_dist_pct": 20.44,
       "dollar_vol": 36345454,
-      "marketCap": null
+      "marketCap": 4702201856
     },
     {
       "ticker": "IMVT",
@@ -1867,7 +1855,7 @@
       "ema250": 21.83,
       "ema250_dist_pct": 18.82,
       "dollar_vol": 36043630,
-      "marketCap": null
+      "marketCap": 5279624704
     },
     {
       "ticker": "TXG",
@@ -1879,7 +1867,7 @@
       "ema250": 16.03,
       "ema250_dist_pct": 19.49,
       "dollar_vol": 34663414,
-      "marketCap": null
+      "marketCap": 2423490816
     },
     {
       "ticker": "LIVN",
@@ -1891,7 +1879,7 @@
       "ema250": 54.41,
       "ema250_dist_pct": 22.1,
       "dollar_vol": 33905872,
-      "marketCap": null
+      "marketCap": 3627445248
     },
     {
       "ticker": "SUPN",
@@ -1903,7 +1891,7 @@
       "ema250": 42.91,
       "ema250_dist_pct": 19.64,
       "dollar_vol": 33714978,
-      "marketCap": null
+      "marketCap": 2943802368
     },
     {
       "ticker": "PPC",
@@ -1915,7 +1903,7 @@
       "ema250": 42.6,
       "ema250_dist_pct": 1.39,
       "dollar_vol": 33692517,
-      "marketCap": null
+      "marketCap": 10259674112
     },
     {
       "ticker": "CASH",
@@ -1927,7 +1915,7 @@
       "ema250": 75.17,
       "ema250_dist_pct": 19.18,
       "dollar_vol": 31410252,
-      "marketCap": null
+      "marketCap": 2001351424
     },
     {
       "ticker": "PK",
@@ -1939,7 +1927,7 @@
       "ema250": 11.43,
       "ema250_dist_pct": 2.24,
       "dollar_vol": 31225157,
-      "marketCap": null
+      "marketCap": 2336988672
     },
     {
       "ticker": "ARDX",
@@ -1951,7 +1939,7 @@
       "ema250": 5.77,
       "ema250_dist_pct": 25.83,
       "dollar_vol": 31223082,
-      "marketCap": null
+      "marketCap": 1763993472
     },
     {
       "ticker": "THO",
@@ -1963,7 +1951,7 @@
       "ema250": 102.07,
       "ema250_dist_pct": 17.38,
       "dollar_vol": 31090694,
-      "marketCap": null
+      "marketCap": 6330600448
     },
     {
       "ticker": "CRC",
@@ -1975,7 +1963,7 @@
       "ema250": 48.3,
       "ema250_dist_pct": 17.55,
       "dollar_vol": 31007557,
-      "marketCap": null
+      "marketCap": 5071131136
     },
     {
       "ticker": "LEG",
@@ -1987,7 +1975,7 @@
       "ema250": 10.72,
       "ema250_dist_pct": 15.65,
       "dollar_vol": 30846239,
-      "marketCap": null
+      "marketCap": 1679409920
     },
     {
       "ticker": "AX",
@@ -1999,7 +1987,7 @@
       "ema250": 81.24,
       "ema250_dist_pct": 16.59,
       "dollar_vol": 30278786,
-      "marketCap": null
+      "marketCap": 5367996928
     },
     {
       "ticker": "OSW",
@@ -2011,7 +1999,7 @@
       "ema250": 20.16,
       "ema250_dist_pct": 11.76,
       "dollar_vol": 29167338,
-      "marketCap": null
+      "marketCap": 2313768704
     },
     {
       "ticker": "DNLI",
@@ -2023,7 +2011,7 @@
       "ema250": 17.51,
       "ema250_dist_pct": 12.45,
       "dollar_vol": 28808439,
-      "marketCap": null
+      "marketCap": 3074758400
     },
     {
       "ticker": "USPH",
@@ -2035,7 +2023,7 @@
       "ema250": 82.06,
       "ema250_dist_pct": 7.42,
       "dollar_vol": 28592615,
-      "marketCap": null
+      "marketCap": 1340091136
     },
     {
       "ticker": "EBC",
@@ -2047,7 +2035,7 @@
       "ema250": 17.67,
       "ema250_dist_pct": 21.78,
       "dollar_vol": 28423616,
-      "marketCap": null
+      "marketCap": 4840920064
     },
     {
       "ticker": "SFBS",
@@ -2059,7 +2047,7 @@
       "ema250": 77.85,
       "ema250_dist_pct": 10.3,
       "dollar_vol": 27624379,
-      "marketCap": null
+      "marketCap": 4690644992
     },
     {
       "ticker": "ULCC",
@@ -2071,7 +2059,7 @@
       "ema250": 4.9,
       "ema250_dist_pct": 12.09,
       "dollar_vol": 27242476,
-      "marketCap": null
+      "marketCap": 1252980224
     },
     {
       "ticker": "MDU",
@@ -2083,7 +2071,7 @@
       "ema250": 18.26,
       "ema250_dist_pct": 12.37,
       "dollar_vol": 27129492,
-      "marketCap": null
+      "marketCap": 4433509376
     },
     {
       "ticker": "MAC",
@@ -2095,7 +2083,7 @@
       "ema250": 17.56,
       "ema250_dist_pct": 7.3,
       "dollar_vol": 26999604,
-      "marketCap": null
+      "marketCap": 5051489792
     },
     {
       "ticker": "INDB",
@@ -2107,7 +2095,7 @@
       "ema250": 69.72,
       "ema250_dist_pct": 20.74,
       "dollar_vol": 26541954,
-      "marketCap": null
+      "marketCap": 4173414144
     },
     {
       "ticker": "BKU",
@@ -2119,7 +2107,7 @@
       "ema250": 40.21,
       "ema250_dist_pct": 22.59,
       "dollar_vol": 26527878,
-      "marketCap": null
+      "marketCap": 3703777280
     },
     {
       "ticker": "OUT",
@@ -2131,19 +2119,7 @@
       "ema250": 20.08,
       "ema250_dist_pct": 29.85,
       "dollar_vol": 26137781,
-      "marketCap": null
-    },
-    {
-      "ticker": "KRUS",
-      "close": 73.07,
-      "high120": 85.05,
-      "drop500_pct": 65.44,
-      "ema60": 64.92,
-      "ema120": 64.64,
-      "ema250": 67.86,
-      "ema250_dist_pct": 7.67,
-      "dollar_vol": 25925235,
-      "marketCap": null
+      "marketCap": 4359804928
     },
     {
       "ticker": "HWKN",
@@ -2155,7 +2131,7 @@
       "ema250": 140.92,
       "ema250_dist_pct": 6.11,
       "dollar_vol": 25061227,
-      "marketCap": null
+      "marketCap": 3125489664
     },
     {
       "ticker": "MWA",
@@ -2167,7 +2143,7 @@
       "ema250": 24.79,
       "ema250_dist_pct": 18.76,
       "dollar_vol": 24926848,
-      "marketCap": null
+      "marketCap": 4603983872
     },
     {
       "ticker": "MHO",
@@ -2179,7 +2155,7 @@
       "ema250": 131.23,
       "ema250_dist_pct": 10.79,
       "dollar_vol": 24410980,
-      "marketCap": null
+      "marketCap": 3836944896
     },
     {
       "ticker": "LBTYA",
@@ -2191,7 +2167,7 @@
       "ema250": 10.89,
       "ema250_dist_pct": 3.55,
       "dollar_vol": 23975639,
-      "marketCap": null
+      "marketCap": 3859942656
     },
     {
       "ticker": "VVX",
@@ -2203,19 +2179,7 @@
       "ema250": 55.75,
       "ema250_dist_pct": 17.25,
       "dollar_vol": 23846977,
-      "marketCap": null
-    },
-    {
-      "ticker": "HIFS",
-      "close": 300.89,
-      "high120": 333.37,
-      "drop500_pct": 51.41,
-      "ema60": 296.57,
-      "ema120": 286.82,
-      "ema250": 272.22,
-      "ema250_dist_pct": 10.53,
-      "dollar_vol": 23800400,
-      "marketCap": null
+      "marketCap": 2037677440
     },
     {
       "ticker": "UNFI",
@@ -2227,7 +2191,7 @@
       "ema250": 31.24,
       "ema250_dist_pct": 28.32,
       "dollar_vol": 23641073,
-      "marketCap": null
+      "marketCap": 2442756608
     },
     {
       "ticker": "WSFS",
@@ -2239,7 +2203,7 @@
       "ema250": 55.6,
       "ema250_dist_pct": 21.68,
       "dollar_vol": 23447490,
-      "marketCap": null
+      "marketCap": 3698828288
     },
     {
       "ticker": "VECO",
@@ -2251,7 +2215,7 @@
       "ema250": 27.86,
       "ema250_dist_pct": 17.03,
       "dollar_vol": 23331818,
-      "marketCap": null
+      "marketCap": 1965684992
     },
     {
       "ticker": "PWP",
@@ -2263,7 +2227,7 @@
       "ema250": 19.83,
       "ema250_dist_pct": 19.58,
       "dollar_vol": 23143330,
-      "marketCap": null
+      "marketCap": 2106215680
     },
     {
       "ticker": "WGO",
@@ -2275,7 +2239,7 @@
       "ema250": 40.33,
       "ema250_dist_pct": 17.41,
       "dollar_vol": 21965664,
-      "marketCap": null
+      "marketCap": 1336246656
     },
     {
       "ticker": "HROW",
@@ -2287,7 +2251,7 @@
       "ema250": 38.75,
       "ema250_dist_pct": 25.57,
       "dollar_vol": 21960257,
-      "marketCap": null
+      "marketCap": 1802242432
     },
     {
       "ticker": "DRVN",
@@ -2299,7 +2263,7 @@
       "ema250": 15.95,
       "ema250_dist_pct": 6.01,
       "dollar_vol": 20937961,
-      "marketCap": null
+      "marketCap": 2780920832
     },
     {
       "ticker": "SKYW",
@@ -2311,7 +2275,7 @@
       "ema250": 100.0,
       "ema250_dist_pct": 4.54,
       "dollar_vol": 20782552,
-      "marketCap": null
+      "marketCap": 4221143040
     },
     {
       "ticker": "BANR",
@@ -2323,7 +2287,7 @@
       "ema250": 63.43,
       "ema250_dist_pct": 2.02,
       "dollar_vol": 20098925,
-      "marketCap": null
+      "marketCap": 2206472192
     }
   ]
 }

@@ -2,27 +2,38 @@
 # -*- coding: utf-8 -*-
 
 """
-US Stock Pattern Scanner (end-of-day, lightweight)
+US Stock Pattern Scanner (EOD, cached)
 
-Your model (current version):
-1) In last ~500 trading days: max drawdown >= 50% (time-ordered peak -> trough)
-2) Recovered from trough (>= 30% from trough)
-3) Price is ABOVE MA250
-4) Recent ~80 bars are in a base (sideways): range relatively tight
-5) In that base: higher lows (second half min low > first half min low)
-6) MA20 is rising (MA20 today > MA20 5 bars ago)
-7) Close is within 10% of the recent 50-day high (near breakout)
+Your model (latest):
+1) Last 500 bars max drawdown >= 50% (time-ordered peak -> trough)
+2) Trough must occur in first 60% of that 500-bar window (avoid trend stocks)
+3) Recent 200d must NOT break the old trough (allow 2% wiggle): recent_min >= window_min * 0.98
+4) Recovered from trough by at least +30%
+5) Price is above MA250 (structure recovery)
+6) Base (last 80 bars) is sideways: range <= 30% of median close
+7) Base has higher lows: 2nd half min low > 1st half min low
+8) MA20 rising: MA20 today > MA20 5 bars ago
+9) Near breakout: close within 10% of the recent 50-day high (close >= high_50d * 0.90)
+10) Break above MA250 must have happened within last 120 bars (breakout-then-base model)
+11) Base should be near MA250 (avoid trend continuation): |median(base) - MA250| / MA250 <= 15%
 
 Universe:
-- Proxy US market via SPTM + IWV (Russell 3000) holdings
-- Clean tickers and exclude obvious non-common instruments (heuristics)
+- SPTM + IWV holdings (proxy for S&P 1500 + Russell 3000-ish)
+- Clean tickers and exclude obvious non-common instruments by heuristics
+- Extra cleaning to drop weird tokens
+
+Filters:
+- US exchanges by holdings (implicit)
+- price > $5
+- last day $ volume > $20M
+- market cap > $1B (best effort via yfinance, cached)
 
 Outputs:
-- picks.json (for your website)
+- picks.json
 
 Cache:
-- data_cache/*.pkl price history cache
-- data_cache/meta_*.json market cap cache
+- data_cache/<TICKER>.pkl  (history)
+- data_cache/meta_<TICKER>.json (market cap)
 """
 
 import os
@@ -51,16 +62,23 @@ os.makedirs(CACHE_DIR, exist_ok=True)
 # Model parameters
 DROP_LOOKBACK = 500
 MIN_MAX_DRAWDOWN_PCT = 50.0
+TROUGH_MUST_BE_EARLY_FRAC = 0.60
+
 RECOVERY_MIN_FROM_TROUGH = 1.30
 
 MA_LONG = 250
 MA_SHORT = 20
-MA_SHORT_SLOPE_LAG = 5
+MA_SHORT_SLOPE_LAG = 5  # compare to 5 bars ago
 
 BASE_BARS = 80
-MAX_BASE_RANGE_PCT = 30.0          # (比之前18更宽，避免Found=0)
-NEAR_HIGH_PCT = 0.90               # within 10%
-NEAR_HIGH_LOOKBACK = 50            # << 你要求：前高用最近50天
+MAX_BASE_RANGE_PCT = 30.0
+
+NEAR_HIGH_LOOKBACK = 50
+NEAR_HIGH_PCT = 0.90
+
+CROSS_LOOKBACK = 120
+
+BASE_NEAR_MA250_MAX_DIST_PCT = 15.0
 
 # Liquidity / size filters
 MIN_PRICE = 5.0
@@ -92,40 +110,39 @@ def safe_float(x) -> Optional[float]:
 
 def normalize_ticker_for_yahoo(t: str) -> str:
     t = str(t).strip().upper()
-    # BRK.B -> BRK-B
-    t = t.replace(".", "-")
+    t = t.replace(".", "-")  # BRK.B -> BRK-B
     return t
 
 def is_plausible_us_common_ticker(t: str) -> bool:
-    """
-    Simple heuristic:
-    - 1-6 alnum, optional suffix -X up to 2 chars
-    - exclude spaces and punctuation
-    """
     t = t.strip().upper()
     if not t:
         return False
-    if len(t) > 8:
+    if len(t) > 10:
         return False
-    if any(ch in t for ch in [" ", "/", "+", "&", "(", ")", ",", ":"]):
+    if any(ch in t for ch in [" ", "/", "+", "&", "(", ")", ",", ":", "$"]):
         return False
     if t in {"-", "N/A", "NA", "NULL"}:
         return False
-    return bool(re.match(r"^[A-Z0-9]{1,6}(-[A-Z0-9]{1,2})?$", t))
+    return bool(re.match(r"^[A-Z0-9]{1,6}(-[A-Z0-9]{1,3})?$", t))
 
 def exclude_special_instruments(t: str) -> bool:
     """
-    Best-effort exclusions: preferred/warrants/rights/units (ticker heuristics).
+    Best-effort exclusions: preferred/warrants/rights/units + leveraged names
     """
-    t = t.upper()
-    if re.search(r"-P[A-Z]?$", t):     # preferred
+    tt = t.upper()
+
+    # Preferred / warrants / rights / units
+    if re.search(r"-P[A-Z]?$", tt):
         return True
-    if re.search(r"-W(S)?$", t):       # warrants
+    if re.search(r"-W(S)?$", tt):
         return True
-    if re.search(r"-R$", t):           # rights
+    if re.search(r"-R$", tt):
         return True
-    if re.search(r"-U$", t):           # units
+    if re.search(r"-U$", tt):
         return True
+
+    # Some holdings files put weird words, reject obvious non-tickers already by regex.
+
     return False
 
 def _suppress_yf_noise():
@@ -145,7 +162,7 @@ def fetch_holdings_tickers_sptm() -> List[str]:
         df = xls.parse(sheet)
         if df is None or df.empty:
             continue
-        cols = [str(c).strip().lower() for c in df.columns]
+
         col_name = None
         for c in df.columns:
             cl = str(c).strip().lower()
@@ -157,6 +174,8 @@ def fetch_holdings_tickers_sptm() -> List[str]:
 
         vals = df[col_name].dropna().astype(str).tolist()
         tickers.extend(vals)
+
+        # usually enough; avoid parsing too many sheets
         if len(tickers) > 500:
             break
 
@@ -169,7 +188,7 @@ def fetch_holdings_tickers_iwv() -> List[str]:
 
     df = None
     sym_col = None
-    for skip in range(0, 20):
+    for skip in range(0, 25):
         try:
             tmp = pd.read_csv(io.StringIO(text), skiprows=skip)
             if tmp is None or tmp.empty:
@@ -278,6 +297,7 @@ def fetch_history_cached(ticker: str) -> Optional[pd.DataFrame]:
 def get_marketcap_best_effort(ticker: str) -> Optional[float]:
     meta_path = os.path.join(CACHE_DIR, f"meta_{ticker}.json")
 
+    # cache
     if os.path.exists(meta_path):
         try:
             with open(meta_path, "r", encoding="utf-8") as f:
@@ -319,7 +339,7 @@ def max_drawdown_pct(close: pd.Series) -> Tuple[float, int, int]:
     """
     Time-ordered max drawdown:
     dd = 1 - close / cummax(close)
-    returns: (max_dd_pct, peak_idx, trough_idx) in the passed series index order
+    returns: (max_dd_pct, peak_idx, trough_idx)
     """
     close = close.dropna()
     if len(close) < 50:
@@ -338,27 +358,26 @@ def scan_shape(ticker: str) -> Optional[Dict]:
     if df is None or df.empty:
         return None
 
-    # Latest close/vol
     close_last = safe_float(df["Close"].iloc[-1])
     vol_last = safe_float(df["Volume"].iloc[-1])
     if close_last is None or vol_last is None:
         return None
 
-    # Liquidity filters
+    # Basic filters
     if close_last < MIN_PRICE:
         return None
     dollar_vol = close_last * vol_last
     if dollar_vol < MIN_DOLLAR_VOL:
         return None
 
-    # Market cap (best-effort)
-    mc = get_marketcap_best_effort(ticker)
-    if mc is not None and mc < MIN_MKTCAP:
+    # Need enough bars
+    need = max(DROP_LOOKBACK, MA_LONG, BASE_BARS, NEAR_HIGH_LOOKBACK, CROSS_LOOKBACK) + 30
+    if len(df) < need:
         return None
 
-    # Need enough bars
-    need = max(DROP_LOOKBACK, MA_LONG, BASE_BARS, NEAR_HIGH_LOOKBACK) + 30
-    if len(df) < need:
+    # Market cap (best effort)
+    mc = get_marketcap_best_effort(ticker)
+    if mc is not None and mc < MIN_MKTCAP:
         return None
 
     # 1) Big drop: max drawdown in last DROP_LOOKBACK (time-ordered)
@@ -366,19 +385,17 @@ def scan_shape(ticker: str) -> Optional[Dict]:
     max_dd, peak_i, trough_i = max_drawdown_pct(window["Close"])
     if max_dd < MIN_MAX_DRAWDOWN_PCT:
         return None
-        # --- NEW: 必须是“深跌后修复”，而不是趋势股 ---
-    # 低点(trough)必须发生在窗口的前60%（避免近期才创新低的票）
-    if trough_i > int(len(window) * 0.6):
+
+    # --- 深跌后修复过滤（防趋势股） ---
+    # trough must be early in window
+    if trough_i > int(len(window) * TROUGH_MUST_BE_EARLY_FRAC):
         return None
 
-    # 最近200天不能再创新低：必须已经止跌并抬升
+    # recent 200d must not undercut old trough (allow 2% wiggle)
     recent_min = safe_float(df.tail(200)["Low"].min())
     window_min = safe_float(window["Low"].min())
-
     if recent_min is None or window_min is None:
         return None
-
-    # 允许2%误差（避免因为一点点影线误杀）
     if recent_min < window_min * 0.98:
         return None
 
@@ -397,14 +414,14 @@ def scan_shape(ticker: str) -> Optional[Dict]:
         return None
     if close_last <= ma250_last:
         return None
-        # --- NEW: MA250 上穿必须发生在最近120天内（突破后盘整模型）---
-    recent = df.tail(120).copy()
-    ma250_recent = ma250.tail(120)
+
+    # 10) Cross above MA250 must occur within last CROSS_LOOKBACK
+    recent = df.tail(CROSS_LOOKBACK).copy()
+    ma250_recent = ma250.tail(CROSS_LOOKBACK)
 
     cross_up = ((recent["Close"].shift(1) < ma250_recent.shift(1)) &
                 (recent["Close"] > ma250_recent)).any()
-
-    if not cross_up:
+    if not bool(cross_up):
         return None
 
     # 4) Base tightness over last BASE_BARS
@@ -419,7 +436,12 @@ def scan_shape(ticker: str) -> Optional[Dict]:
     if base_range_pct > MAX_BASE_RANGE_PCT:
         return None
 
-    # 5) Higher lows within base (simple and robust)
+    # 11) base near MA250 (avoid trend continuation far above MA250)
+    distance_pct = abs(base_mid - ma250_last) / ma250_last * 100.0
+    if distance_pct > BASE_NEAR_MA250_MAX_DIST_PCT:
+        return None
+
+    # 5) Higher lows within base
     first_half_min = safe_float(base["Low"].iloc[: BASE_BARS // 2].min())
     second_half_min = safe_float(base["Low"].iloc[BASE_BARS // 2 :].min())
     if first_half_min is None or second_half_min is None:
@@ -427,7 +449,7 @@ def scan_shape(ticker: str) -> Optional[Dict]:
     if second_half_min <= first_half_min:
         return None
 
-    # 6) MA20 rising (you requested)
+    # 6) MA20 rising
     ma20 = df["Close"].rolling(MA_SHORT).mean()
     ma20_last = safe_float(ma20.iloc[-1])
     ma20_prev = safe_float(ma20.iloc[-(MA_SHORT_SLOPE_LAG + 1)])  # 5 bars ago
@@ -436,7 +458,7 @@ def scan_shape(ticker: str) -> Optional[Dict]:
     if ma20_last <= ma20_prev:
         return None
 
-    # 7) Near recent 50-day high (you requested)
+    # 7) Near recent 50-day high
     prior_high = safe_float(df.tail(NEAR_HIGH_LOOKBACK)["Close"].max())
     if prior_high is None or prior_high <= 0:
         return None
@@ -446,11 +468,12 @@ def scan_shape(ticker: str) -> Optional[Dict]:
     return {
         "ticker": ticker,
         "close": round(close_last, 2),
-        "prior_high_50d": round(prior_high, 2),
+        "high_50d": round(prior_high, 2),
         "ma250": round(ma250_last, 2),
         "ma20": round(ma20_last, 2),
         "max_drawdown_pct": round(max_dd, 2),
         "base_range_pct": round(base_range_pct, 2),
+        "base_ma250_dist_pct": round(distance_pct, 2),
         "dollar_vol": int(dollar_vol),
         "marketCap": int(mc) if mc else None,
     }
@@ -460,7 +483,7 @@ def scan_shape(ticker: str) -> Optional[Dict]:
 # Main
 # -----------------------
 def main():
-    # best-effort raise open-file limit (prevents Errno 24)
+    # best-effort raise open-file limit
     try:
         import resource
         soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
@@ -471,6 +494,7 @@ def main():
     universe = get_universe()
     print(f"Universe (clean): {len(universe)}")
 
+    # Optional pre-filter pass: keep only tickers that have cached history or can be fetched quickly
     results: List[Dict] = []
     failed = 0
 
@@ -485,7 +509,7 @@ def main():
 
     # Sort: closest to 50d high first, then dollar volume
     def sort_key(x: Dict) -> Tuple[float, float]:
-        prior = x.get("prior_high_50d") or 0
+        prior = x.get("high_50d") or 0
         close = x.get("close") or 0
         ratio = (close / prior) if prior else 0
         return (ratio, x.get("dollar_vol", 0))
@@ -500,6 +524,7 @@ def main():
         "params": {
             "DROP_LOOKBACK": DROP_LOOKBACK,
             "MIN_MAX_DRAWDOWN_PCT": MIN_MAX_DRAWDOWN_PCT,
+            "TROUGH_MUST_BE_EARLY_FRAC": TROUGH_MUST_BE_EARLY_FRAC,
             "RECOVERY_MIN_FROM_TROUGH": RECOVERY_MIN_FROM_TROUGH,
             "MA_LONG": MA_LONG,
             "MA_SHORT": MA_SHORT,
@@ -508,6 +533,8 @@ def main():
             "MAX_BASE_RANGE_PCT": MAX_BASE_RANGE_PCT,
             "NEAR_HIGH_LOOKBACK": NEAR_HIGH_LOOKBACK,
             "NEAR_HIGH_PCT": NEAR_HIGH_PCT,
+            "CROSS_LOOKBACK": CROSS_LOOKBACK,
+            "BASE_NEAR_MA250_MAX_DIST_PCT": BASE_NEAR_MA250_MAX_DIST_PCT,
             "MIN_PRICE": MIN_PRICE,
             "MIN_DOLLAR_VOL": MIN_DOLLAR_VOL,
             "MIN_MKTCAP": MIN_MKTCAP,

@@ -3,8 +3,7 @@ name: Daily US Close Scan
 on:
   workflow_dispatch:
   schedule:
-    # 每天多跑几次没关系：我们后面用 run_if_after_close.py 来决定“是否该跑”
-    # 这样自动处理美股夏令时/冬令时（DST）
+    # 每15分钟跑一次（周一到周五），由 run_if_after_close.py 判断是否到“收盘+15分钟”
     - cron: "0,15,30,45 * * * 1-5"
 
 permissions:
@@ -13,7 +12,6 @@ permissions:
 jobs:
   scan:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,7 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # ✅ 关键：恢复/保存缓存（下次就不会从头抓所有历史数据）
+      # ✅ 关键：恢复/保存扫描缓存（加速 yfinance 抓取）
       - name: Restore cache (data_cache)
         uses: actions/cache@v4
         with:
@@ -37,28 +35,26 @@ jobs:
           restore-keys: |
             data-cache-v1
 
-      # ✅ 用“是否已收盘+15分钟”的逻辑来决定要不要真正执行 scan
-      - name: Run only after US close + 15m (DST-safe)
+      # ✅ 关键：恢复/保存“今日是否已跑过”的状态文件（否则每次都会认为没跑过）
+      - name: Restore cache (last_run.json)
+        uses: actions/cache@v4
+        with:
+          path: .github/last_run.json
+          key: last-run-v1
+          restore-keys: |
+            last-run-v1
+
+      - name: Run after close gate (runs scan.py inside if needed)
         run: |
           python .github/scripts/run_if_after_close.py
-
-      # ✅ 执行扫描（run_if_after_close.py 内部会触发/调用 scan.py；如果你脚本不是这样写的，看下方备注）
-      # 如果 run_if_after_close.py 只是“判断并退出”，那就把下面两行改成：
-      #   python scan.py
-      #   python scan.py  (你自己决定是否也生成 sectors.json)
-      #
-      # - name: Run scan
-      #   run: |
-      #     python scan.py
 
       - name: Commit updated JSON (if changed)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add picks.json sectors.json || true
+          git add picks.json sectors.json .github/last_run.json || true
 
-          # 如果没变化就不提交，避免每天空提交
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0

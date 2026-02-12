@@ -20,163 +20,71 @@
       margin:0;
       background:var(--bg);
       color:var(--text);
-      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
     }
-    .container{
-      max-width:1250px;
-      margin:0 auto;
-      padding:28px 16px 70px;
-    }
-    h1{
-      text-align:center;
-      color:var(--mint);
-      margin:8px 0 8px;
-      font-size:44px;
-      letter-spacing:0.5px;
-    }
-    .subtitle{
-      text-align:center;
-      margin:0 0 22px;
-      color:var(--muted);
-    }
+    .container{max-width:1250px;margin:0 auto;padding:28px 16px 70px;}
+    h1{text-align:center;color:var(--mint);margin:8px 0;font-size:44px;letter-spacing:.5px;}
+    .subtitle{text-align:center;margin:0 0 22px;color:var(--muted);}
     .section{
-      margin:16px 0;
-      padding:18px;
-      border-radius:18px;
-      background:var(--card);
-      border:1px solid var(--border);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      margin:16px 0;padding:18px;border-radius:18px;background:var(--card);
+      border:1px solid var(--border);box-shadow:0 10px 30px rgba(0,0,0,.25);
     }
-    .section h2{
-      margin:0 0 12px;
-      font-size:26px;
-      color:#e9fffa;
-      text-align:center;
-    }
+    .section h2{margin:0 0 12px;font-size:26px;color:#e9fffa;text-align:center;}
 
-    /* Picks charts */
-    .pager{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      justify-content:center;
-      margin:10px 0 16px;
-      flex-wrap:wrap;
-    }
+    /* Picks */
+    .pager{display:flex;gap:12px;align-items:center;justify-content:center;margin:10px 0 16px;flex-wrap:wrap;}
     .pager button{
-      padding:8px 14px;
-      border-radius:10px;
-      border:1px solid rgba(255,255,255,0.15);
-      background: rgba(255,255,255,0.06);
-      color:#d8fff2;
-      cursor:pointer;
+      padding:8px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.15);
+      background:rgba(255,255,255,.06);color:#d8fff2;cursor:pointer;
     }
-    .pager button:disabled{ opacity:0.4; cursor:not-allowed; }
-
-    .charts-grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:14px;
-    }
+    .pager button:disabled{opacity:.4;cursor:not-allowed;}
+    .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
     .chart-card{
-      border-radius:14px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.04);
-      padding:10px;
+      border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);padding:10px;
     }
-    .chart-title{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      font-weight:800;
-      margin:0 0 8px 0;
-      color:var(--mint);
-      letter-spacing:0.2px;
-    }
+    .chart-title{display:flex;justify-content:space-between;align-items:center;font-weight:800;margin:0 0 8px;color:var(--mint);}
     .chart-box{
       width:100%;
       height:320px;
-    }
-
-    .two-col{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:14px;
-    }
-
-    /* Sector strength */
-    .sector-wrap{
-      display:grid;
-      grid-template-columns: 1.25fr 0.75fr;
-      gap:14px;
-      align-items:start;
-    }
-    .sector-card{
-      border-radius:14px;
+      position:relative;
+      border-radius:12px;
       overflow:hidden;
-      border:1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.04);
-      padding:12px;
+      background:rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.08);
     }
-    .sector-meta{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:center;
-      color:var(--muted);
-      font-size:13px;
-      margin-top:6px;
-    }
-    .sector-canvas{
-      width:100%;
-      height:420px;
-      display:block;
-      border-radius:12px;
-      background: rgba(0,0,0,0.25);
-      border:1px solid rgba(255,255,255,0.08);
-    }
-    .rank-title{
-      font-weight:800;
-      color:#e9fffa;
-      margin:0 0 8px 0;
-      text-align:center;
-    }
-    .rank-box{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:10px;
-    }
-    .rank-list{
-      border:1px solid rgba(255,255,255,0.10);
-      border-radius:12px;
-      padding:10px 12px;
-      background: rgba(0,0,0,0.18);
-    }
-    .rank-list h3{
-      margin:0 0 8px 0;
-      font-size:14px;
-      color:#e9fffa;
-      text-align:left;
-    }
-    .rank-item{
-      display:flex;
-      justify-content:space-between;
-      padding:6px 0;
-      border-bottom:1px dashed rgba(255,255,255,0.10);
-      font-size:13px;
-    }
-    .rank-item:last-child{ border-bottom:none; }
-    .pos{ color: var(--good); font-weight:700;}
-    .neg{ color: var(--bad); font-weight:700;}
+    .chart-box iframe{width:100% !important;height:100% !important;display:block;}
 
-    @media (max-width: 980px){
-      .charts-grid{ grid-template-columns: 1fr; }
-      .two-col{ grid-template-columns: 1fr; }
-      .sector-wrap{ grid-template-columns: 1fr; }
-      .chart-box{ height:360px; }
-      .sector-canvas{ height:420px; }
-      h1{ font-size:34px; }
+    /* Macro */
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+    /* Sector Strength */
+    .sector-wrap{display:grid;grid-template-columns:1.25fr .75fr;gap:14px;align-items:start;}
+    .sector-card{
+      border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);padding:12px;
+    }
+    .sector-meta{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;color:var(--muted);font-size:13px;margin-top:8px;}
+    .sector-canvas{
+      width:100%;height:420px;display:block;border-radius:12px;background:rgba(0,0,0,.25);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .rank-title{font-weight:800;color:#e9fffa;margin:0 0 8px;text-align:center;}
+    .rank-box{display:grid;grid-template-columns:1fr;gap:10px;}
+    .rank-list{border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:10px 12px;background:rgba(0,0,0,.18);}
+    .rank-list h3{margin:0 0 8px;font-size:14px;color:#e9fffa;text-align:left;}
+    .rank-item{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed rgba(255,255,255,.10);font-size:13px;}
+    .rank-item:last-child{border-bottom:none;}
+    .pos{color:var(--good);font-weight:700;}
+    .neg{color:var(--bad);font-weight:700;}
+
+    @media (max-width:980px){
+      .charts-grid{grid-template-columns:1fr;}
+      .two-col{grid-template-columns:1fr;}
+      .sector-wrap{grid-template-columns:1fr;}
+      .chart-box{height:360px;}
+      .sector-canvas{height:420px;}
+      h1{font-size:34px;}
     }
   </style>
 </head>
@@ -186,7 +94,7 @@
     <h1>Market Dashboard</h1>
     <div class="subtitle">Daily scan picks + sector relative strength + macro snapshot</div>
 
-    <!-- ===== Sector Relative Strength (Top Section) ===== -->
+    <!-- ===== Sector Relative Strength ===== -->
     <div class="section">
       <h2>Sector Relative Strength (Sector / SPY)</h2>
       <div class="sector-wrap">
@@ -212,35 +120,31 @@
             </div>
           </div>
           <div class="sector-meta" style="justify-content:flex-start;margin-top:10px;">
-            <span style="opacity:.85">Method: compute (Sector/SPY) index, then rank by 5D % change.</span>
+            <span style="opacity:.85">Method: compute (Sector/SPY) index, rank by 5D % change.</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ===== My Picks Charts ===== -->
+    <!-- ===== Picks ===== -->
     <div class="section">
       <h2>My Picks Charts (6 per page)</h2>
-
       <div class="pager">
         <button id="prevPage" type="button">Prev</button>
         <div id="pageInfo">Loading picks.json...</div>
         <button id="nextPage" type="button">Next</button>
       </div>
-
       <div id="chartsGrid" class="charts-grid"></div>
     </div>
 
-    <!-- ===== Macro Snapshot ===== -->
+    <!-- ===== Macro ===== -->
     <div class="section">
       <h2>Macro Snapshot</h2>
-
       <div class="two-col">
         <div class="chart-card">
           <div class="chart-title"><span>Fed Funds Rate</span><span style="opacity:.75;font-weight:600;">1D</span></div>
           <div class="chart-box" id="fedFunds"></div>
         </div>
-
         <div class="chart-card">
           <div class="chart-title"><span>US CPI</span><span style="opacity:.75;font-weight:600;">1D</span></div>
           <div class="chart-box" id="cpi"></div>
@@ -260,21 +164,17 @@
       <h2>Market Heatmap</h2>
       <div id="heatmap"></div>
     </div>
-
   </div>
 
-  <!-- TradingView Widgets (fixed width/height, no autosize) -->
+  <!-- ===== TradingView helpers (稳定写法：script 放到 container 里，不用 container_id) ===== -->
   <script>
-    function addTVWidgetAdvanced(containerId, symbol, height=320){
-      const el = document.getElementById(containerId);
-      if(!el) return;
-
+    function mountTVAdvancedChart(containerEl, symbol, height=320){
       const s = document.createElement("script");
       s.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
       s.async = true;
       s.textContent = JSON.stringify({
         width: "100%",
-        height: height,
+        height: "100%",
         symbol: symbol,
         interval: "D",
         timezone: "Etc/UTC",
@@ -285,16 +185,13 @@
         hide_legend: true,
         allow_symbol_change: false,
         save_image: false,
-        withdateranges: false,
-        container_id: containerId
+        withdateranges: false
       });
-      el.appendChild(s);
+      containerEl.style.height = height + "px";
+      containerEl.appendChild(s);
     }
 
-    function addTVHeatmap(containerId){
-      const el = document.getElementById(containerId);
-      if(!el) return;
-
+    function mountTVHeatmap(containerEl){
       const s = document.createElement("script");
       s.src = "https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js";
       s.async = true;
@@ -303,7 +200,6 @@
         blockSize: "market_cap_basic",
         blockColor: "change",
         locale: "en",
-        symbolUrl: "",
         colorTheme: "dark",
         hasTopBar: false,
         isDataSetEnabled: false,
@@ -312,18 +208,18 @@
         width: "100%",
         height: 400
       });
-      el.appendChild(s);
+      containerEl.appendChild(s);
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      addTVWidgetAdvanced("fedFunds", "FRED:EFFR", 320);
-      addTVWidgetAdvanced("cpi", "ECONOMICS:USCPI", 320);
-      addTVWidgetAdvanced("nvda", "NASDAQ:NVDA", 520);
-      addTVHeatmap("heatmap");
+      mountTVAdvancedChart(document.getElementById("fedFunds"), "FRED:EFFR", 320);
+      mountTVAdvancedChart(document.getElementById("cpi"), "ECONOMICS:USCPI", 320);
+      mountTVAdvancedChart(document.getElementById("nvda"), "NASDAQ:NVDA", 520);
+      mountTVHeatmap(document.getElementById("heatmap"));
     });
   </script>
 
-  <!-- Picks charts (pagination, 6 per page) -->
+  <!-- ===== Picks (6 per page) ===== -->
   <script>
     (function(){
       const PAGE_SIZE = 6;
@@ -361,34 +257,14 @@
           title.innerHTML = `<span>${t}</span><span style="opacity:.75;font-weight:600;">1D</span>`;
 
           const box = document.createElement("div");
-          const id = `tv_${t}_${page}_${Math.random().toString(16).slice(2)}`;
-          box.id = id;
           box.className = "chart-box";
 
           card.appendChild(title);
           card.appendChild(box);
           grid.appendChild(card);
 
-          const s = document.createElement("script");
-          s.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
-          s.async = true;
-          s.textContent = JSON.stringify({
-            width: "100%",
-            height: 320,
-            symbol: t,     // if needed: "NASDAQ:"+t
-            interval: "D",
-            timezone: "Etc/UTC",
-            theme: "dark",
-            style: "1",
-            locale: "en",
-            hide_top_toolbar: true,
-            hide_legend: true,
-            allow_symbol_change: false,
-            save_image: false,
-            withdateranges: false,
-            container_id: id
-          });
-          card.appendChild(s);
+          // 关键：把 TV widget 挂到 box 内部
+          mountTVAdvancedChart(box, t, 320);
         });
       }
 
@@ -407,73 +283,76 @@
       }
 
       document.addEventListener("DOMContentLoaded", () => {
-        const prevBtn = $("prevPage");
-        const nextBtn = $("nextPage");
-        if(prevBtn) prevBtn.addEventListener("click", () => { page--; renderPage(); });
-        if(nextBtn) nextBtn.addEventListener("click", () => { page++; renderPage(); });
+        $("prevPage").addEventListener("click", () => { page--; renderPage(); });
+        $("nextPage").addEventListener("click", () => { page++; renderPage(); });
         loadPicks();
       });
     })();
   </script>
 
-  <!-- Sector Relative Strength (Canvas) + Top3/Bottom3 -->
+  <!-- ===== Sector Relative Strength (TwelveData + cache) ===== -->
   <script>
     (function(){
-      // US sector ETFs (GICS-ish) + SPY baseline
-      const SECTORS = [
-        { name: "XLE", label: "Energy" },
-        { name: "XLB", label: "Materials" },
-        { name: "XLI", label: "Industrials" },
-        { name: "XLF", label: "Financials" },
-        { name: "XLK", label: "Technology" },
-        { name: "XLV", label: "Health Care" },
-        { name: "XLY", label: "Consumer Discr." },
-        { name: "XLP", label: "Consumer Staples" },
-        { name: "XLU", label: "Utilities" },
-        { name: "XLRE", label: "Real Estate" },
-        { name: "XLC", label: "Comm Services" }
-      ];
-      const BASE = "SPY";
+      // ✅ 你的 TwelveData key（暂时放前端，后面可改为 scan.py 生成 JSON）
+      const TWELVE_KEY = "5528eb633fd71ac2cdff279205b7064b";
 
-      const LOOKBACK_DAYS = 140;   // fetch a bit more, we will plot ~120 trading days
-      const PLOT_POINTS = 120;
-      const RANK_WINDOW = 5;
+      const BASE = "SPY";
+      const SECTORS = [
+        { t:"XLE", label:"Energy" },
+        { t:"XLB", label:"Materials" },
+        { t:"XLI", label:"Industrials" },
+        { t:"XLF", label:"Financials" },
+        { t:"XLK", label:"Technology" },
+        { t:"XLV", label:"Health Care" },
+        { t:"XLY", label:"Consumer Discr." },
+        { t:"XLP", label:"Consumer Staples" },
+        { t:"XLU", label:"Utilities" },
+        { t:"XLRE", label:"Real Estate" },
+        { t:"XLC", label:"Comm Services" }
+      ];
+
+      const PLOT_POINTS = 120;        // 画最近120个交易日
+      const RANK_WINDOW = 5;          // 排名窗口 5天
+      const FETCH_POINTS = 170;       // 多取一些，防止缺失
+      const CACHE_KEY = "sector_rs_cache_v1";
+
+      const COLORS = [
+        "#7BDFF2","#B2F7EF","#EFF7F6","#F7D6E0","#F2B5D4",
+        "#F8C0C8","#C3FBD8","#B5F2E2","#A9DEF9","#E4C1F9",
+        "#FFCAD4","#D4A5A5"
+      ];
 
       function $(id){ return document.getElementById(id); }
+      function pctChange(a,b){ return (b && b!==0) ? (a/b - 1) : 0; }
 
-      // Fetch daily close from Stooq (usually no CORS problem)
-      // Example: https://stooq.com/q/d/l/?s=spy.us&i=d
-      async function fetchStooq(symbol){
-        const url = `https://stooq.com/q/d/l/?s=${symbol.toLowerCase()}.us&i=d`;
-        const r = await fetch(url, { cache: "no-store" });
-        const txt = await r.text();
-        // CSV: Date,Open,High,Low,Close,Volume
-        const lines = txt.trim().split("\n");
-        if(lines.length < 10) throw new Error("Stooq data too short for " + symbol);
+      function setStatus(msg){ $("sectorStatus").textContent = msg; }
 
-        const out = [];
-        for(let i=1;i<lines.length;i++){
-          const parts = lines[i].split(",");
-          const date = parts[0];
-          const close = parseFloat(parts[4]);
-          if(date && Number.isFinite(close)) out.push({ date, close });
-        }
-        return out;
+      async function fetchTD(symbol){
+        const url =
+          `https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(symbol)}` +
+          `&interval=1day&outputsize=${FETCH_POINTS}&format=JSON&apikey=${TWELVE_KEY}`;
+        const r = await fetch(url);
+        const j = await r.json();
+        if(j.status === "error") throw new Error(symbol + ": " + (j.message || "error"));
+        if(!j.values || !Array.isArray(j.values)) throw new Error(symbol + ": no values");
+        // values are newest first
+        const arr = j.values
+          .map(v => ({ date: v.datetime, close: parseFloat(v.close) }))
+          .filter(v => v.date && Number.isFinite(v.close))
+          .reverse(); // oldest -> newest
+        return arr;
       }
 
-      // align series by date intersection
       function alignByDate(seriesMap){
         const keys = Object.keys(seriesMap);
-        const dateSets = keys.map(k => new Set(seriesMap[k].map(p => p.date)));
-        // intersection dates
-        let dates = [...dateSets[0]];
-        for(let i=1;i<dateSets.length;i++){
-          const set = dateSets[i];
-          dates = dates.filter(d => set.has(d));
+        const sets = keys.map(k => new Set(seriesMap[k].map(p => p.date)));
+        let dates = [...sets[0]];
+        for(let i=1;i<sets.length;i++){
+          dates = dates.filter(d => sets[i].has(d));
         }
         dates.sort();
-        // keep last N dates
-        if(dates.length > LOOKBACK_DAYS) dates = dates.slice(dates.length - LOOKBACK_DAYS);
+        // take last PLOT_POINTS (but leave head room)
+        if(dates.length > (PLOT_POINTS + 10)) dates = dates.slice(dates.length - (PLOT_POINTS + 10));
 
         const aligned = {};
         for(const k of keys){
@@ -483,26 +362,18 @@
         return { dates, aligned };
       }
 
-      function pctChange(a, b){
-        // from b to a: (a/b - 1)
-        return (b && b !== 0) ? (a / b - 1) : 0;
-      }
-
-      // Build ratio index: (sector_close / spy_close) normalized to 100 at start
-      function buildRatioIndex(sector, spy){
-        const n = Math.min(sector.length, spy.length);
+      function buildRatioIndex(sec, spy){
+        const n = Math.min(sec.length, spy.length);
         const ratio = [];
         for(let i=0;i<n;i++){
-          ratio.push({ date: sector[i].date, v: sector[i].close / spy[i].close });
+          ratio.push({ date: sec[i].date, v: sec[i].close / spy[i].close });
         }
-        // take last PLOT_POINTS
         const sliced = ratio.slice(Math.max(0, ratio.length - PLOT_POINTS));
         const base = sliced[0]?.v || 1;
         return sliced.map(p => ({ date: p.date, v: (p.v / base) * 100 }));
       }
 
       function renderTopBottom(changes){
-        // changes: [{ticker,label,chg}]
         const sorted = [...changes].sort((a,b) => b.chg - a.chg);
         const top = sorted.slice(0,3);
         const bottom = sorted.slice(-3).reverse();
@@ -510,161 +381,150 @@
         function rowHTML(x){
           const cls = x.chg >= 0 ? "pos" : "neg";
           const pct = (x.chg * 100).toFixed(2) + "%";
-          return `<div class="rank-item"><span>${x.ticker} <span style="opacity:.7">(${x.label})</span></span><span class="${cls}">${pct}</span></div>`;
+          return `<div class="rank-item"><span>${x.t} <span style="opacity:.7">(${x.label})</span></span><span class="${cls}">${pct}</span></div>`;
         }
-
         $("top3").innerHTML = top.map(rowHTML).join("");
         $("bottom3").innerHTML = bottom.map(rowHTML).join("");
       }
 
-      // Simple multi-line chart on canvas
-      function drawChart(canvas, seriesList){
+      function drawChart(seriesList){
+        const canvas = $("sectorCanvas");
         const ctx = canvas.getContext("2d");
         const rect = canvas.getBoundingClientRect();
-        // handle HiDPI
         const dpr = window.devicePixelRatio || 1;
         canvas.width = Math.floor(rect.width * dpr);
         canvas.height = Math.floor(rect.height * dpr);
-        ctx.scale(dpr, dpr);
+        ctx.scale(dpr,dpr);
 
-        const w = rect.width;
-        const h = rect.height;
+        const w = rect.width, h = rect.height;
+        const padL=46,padR=8,padT=10,padB=26;
+        const iw=w-padL-padR, ih=h-padT-padB;
 
-        // padding
-        const padL = 46, padR = 8, padT = 10, padB = 26;
-        const iw = w - padL - padR;
-        const ih = h - padT - padB;
-
-        // background
         ctx.clearRect(0,0,w,h);
-        ctx.fillStyle = "rgba(0,0,0,0.20)";
+        ctx.fillStyle="rgba(0,0,0,0.20)";
         ctx.fillRect(0,0,w,h);
 
-        // find min/max
-        let minV = Infinity, maxV = -Infinity;
+        let minV=Infinity,maxV=-Infinity;
         for(const s of seriesList){
-          for(const p of s.data){
-            if(p.v < minV) minV = p.v;
-            if(p.v > maxV) maxV = p.v;
-          }
+          for(const p of s.data){ minV=Math.min(minV,p.v); maxV=Math.max(maxV,p.v); }
         }
-        // add padding to range
-        const range = maxV - minV || 1;
-        minV -= range * 0.08;
-        maxV += range * 0.08;
+        const range=(maxV-minV)||1;
+        minV -= range*0.08; maxV += range*0.08;
 
-        function x(i, n){ return padL + (i/(n-1)) * iw; }
-        function y(v){ return padT + (1 - (v - minV)/(maxV - minV)) * ih; }
+        const n = seriesList[0]?.data.length || 0;
+        const x = (i)=> padL + (i/(n-1))*iw;
+        const y = (v)=> padT + (1-(v-minV)/(maxV-minV))*ih;
 
         // grid
-        ctx.strokeStyle = "rgba(255,255,255,0.08)";
-        ctx.lineWidth = 1;
-        const gridY = 5;
-        for(let i=0;i<=gridY;i++){
-          const yy = padT + (i/gridY)*ih;
-          ctx.beginPath();
-          ctx.moveTo(padL, yy);
-          ctx.lineTo(padL+iw, yy);
-          ctx.stroke();
+        ctx.strokeStyle="rgba(255,255,255,0.08)";
+        ctx.lineWidth=1;
+        for(let i=0;i<=5;i++){
+          const yy=padT+(i/5)*ih;
+          ctx.beginPath(); ctx.moveTo(padL,yy); ctx.lineTo(padL+iw,yy); ctx.stroke();
         }
 
         // y labels
-        ctx.fillStyle = "rgba(215,231,226,0.75)";
-        ctx.font = "12px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Arial";
-        for(let i=0;i<=gridY;i++){
-          const v = maxV - (i/gridY)*(maxV-minV);
-          const yy = padT + (i/gridY)*ih;
+        ctx.fillStyle="rgba(215,231,226,0.75)";
+        ctx.font="12px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial";
+        for(let i=0;i<=5;i++){
+          const v=maxV-(i/5)*(maxV-minV);
+          const yy=padT+(i/5)*ih;
           ctx.fillText(v.toFixed(2), 6, yy+4);
         }
 
-        // draw lines
+        // lines
         for(const s of seriesList){
-          const n = s.data.length;
-          ctx.strokeStyle = s.color;
-          ctx.lineWidth = 1.6;
+          ctx.strokeStyle=s.color;
+          ctx.lineWidth=1.6;
           ctx.beginPath();
           for(let i=0;i<n;i++){
-            const px = x(i,n);
-            const py = y(s.data[i].v);
+            const px=x(i), py=y(s.data[i].v);
             if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
           }
           ctx.stroke();
         }
 
-        // bottom date label (first/last)
-        const firstDate = seriesList[0]?.data[0]?.date || "";
-        const lastDate = seriesList[0]?.data[seriesList[0].data.length-1]?.date || "";
-        ctx.fillStyle = "rgba(215,231,226,0.70)";
-        ctx.fillText(firstDate, padL, h-8);
-        ctx.fillText(lastDate, w-90, h-8);
+        // date labels
+        const first=seriesList[0].data[0]?.date || "";
+        const last=seriesList[0].data[n-1]?.date || "";
+        ctx.fillStyle="rgba(215,231,226,0.70)";
+        ctx.fillText(first, padL, h-8);
+        ctx.fillText(last, w-110, h-8);
       }
 
-      // generate distinct readable colors (pre-set)
-      const COLORS = [
-        "#7BDFF2","#B2F7EF","#EFF7F6","#F7D6E0","#F2B5D4",
-        "#F8C0C8","#C3FBD8","#B5F2E2","#A9DEF9","#E4C1F9",
-        "#FFCAD4","#D4A5A5"
-      ];
+      function todayKey(){
+        const d = new Date();
+        const y = d.getFullYear();
+        const m = String(d.getMonth()+1).padStart(2,"0");
+        const day = String(d.getDate()).padStart(2,"0");
+        return `${y}-${m}-${day}`;
+      }
+
+      async function loadData(){
+        // cache (1 day)
+        const cached = localStorage.getItem(CACHE_KEY);
+        if(cached){
+          try{
+            const obj = JSON.parse(cached);
+            if(obj && obj.dateKey === todayKey() && obj.payload){
+              return obj.payload;
+            }
+          }catch{}
+        }
+
+        setStatus("Fetching sector data from TwelveData...");
+        const seriesMap = {};
+        seriesMap[BASE] = await fetchTD(BASE);
+
+        // serial fetch to avoid rate issues (稳定)
+        for(const s of SECTORS){
+          seriesMap[s.t] = await fetchTD(s.t);
+        }
+
+        const payload = seriesMap;
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ dateKey: todayKey(), payload }));
+        return payload;
+      }
 
       async function main(){
-        const status = $("sectorStatus");
         try{
-          status.textContent = "Loading sector prices...";
-          // fetch all: sectors + spy
-          const seriesMap = {};
-          seriesMap[BASE] = await fetchStooq(BASE);
-          for(const s of SECTORS){
-            seriesMap[s.name] = await fetchStooq(s.name);
-          }
-
-          // align by date intersection
+          setStatus("Loading sector data...");
+          const seriesMap = await loadData();
           const { aligned } = alignByDate(seriesMap);
           const spy = aligned[BASE];
 
-          // build ratio indices + 5D change
           const seriesList = [];
           const changes = [];
+          let ci=0;
 
-          let ci = 0;
           for(const s of SECTORS){
-            const sec = aligned[s.name];
-            const ratioIdx = buildRatioIndex(sec, spy); // normalized to 100
-            seriesList.push({ name: s.name, label: s.label, data: ratioIdx, color: COLORS[ci % COLORS.length] });
+            const sec = aligned[s.t];
+            const idx = buildRatioIndex(sec, spy);
+            seriesList.push({ t:s.t, label:s.label, data: idx, color: COLORS[ci % COLORS.length] });
             ci++;
 
-            // 5-day change of ratio index (use last and last-5)
-            const n = ratioIdx.length;
+            const n = idx.length;
             if(n > RANK_WINDOW){
-              const last = ratioIdx[n-1].v;
-              const prev = ratioIdx[n-1-RANK_WINDOW].v;
-              const chg = pctChange(last, prev);
-              changes.push({ ticker: s.name, label: s.label, chg });
+              const last = idx[n-1].v;
+              const prev = idx[n-1-RANK_WINDOW].v;
+              changes.push({ t:s.t, label:s.label, chg: pctChange(last, prev) });
             }
           }
 
-          // render top/bottom
           renderTopBottom(changes);
-
-          // draw canvas
-          status.textContent = "Rendering chart...";
-          const canvas = $("sectorCanvas");
-          drawChart(canvas, seriesList);
-
-          status.textContent = "Updated.";
+          drawChart(seriesList);
+          setStatus("Updated.");
         }catch(e){
           console.error(e);
-          status.textContent = "Failed to load sector data (check Console).";
+          setStatus("Failed to load sector data (check Console).");
+          $("top3").innerHTML = "";
+          $("bottom3").innerHTML = "";
         }
       }
 
-      window.addEventListener("resize", () => {
-        // re-render on resize (best effort)
-        main();
-      });
-
+      window.addEventListener("resize", () => { main(); });
       document.addEventListener("DOMContentLoaded", main);
     })();
   </script>
-
 </body>
 </html>

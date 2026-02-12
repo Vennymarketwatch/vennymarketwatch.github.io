@@ -39,7 +39,7 @@ jobs:
         run: |
           python .github/scripts/run_if_after_close.py
 
-      - name: Commit updated JSON (if changed)
+           - name: Commit updated JSON (if changed)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -51,5 +51,10 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Daily scan update"
-          git push
+          git commit -m "Daily scan update" || true
+
+          # ✅ 关键：先把远端最新内容 rebase 进来，再 push，避免 fetch first
+          git pull --rebase origin main
+
+          # ✅ 关键：push（rebase 后通常就是 fast-forward）
+          git push origin HEAD:main

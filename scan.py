@@ -3,40 +3,7 @@
 
 """
 US Stock Pattern Scanner (EOD, cached)
-
-Your updated model (as requested):
-- Keep everything unchanged unless explicitly mentioned.
-
-Changes applied:
-5) Refined to:
-   In last 500 bars:
-   - drop from highest close to lowest close >= 30%
-   - AND there exists at least one day where price is simultaneously below EMA20, EMA60, EMA120, EMA250
-6) Removed (no more "trough early in window")
-7) Changed to: last 100 trading days cannot break the 500-day window low
-9) Changed to: current price must be above EMA60, EMA120, EMA250
-10) Changed to: within last 150 trading days, must have at least one cross up above EMA250
-11) Removed (no base range/sideways constraint)
-12) Changed to: distance to EMA250 < 30% (instead of 15%)
-13) Removed
-14) Removed
-15) Changed to: current price must be BELOW the recent 90-day high (no 90% threshold)
-
-Universe:
-- SPTM + IWV holdings (proxy for S&P 1500 + Russell 3000-ish)
-- Clean tickers and exclude obvious non-common instruments by heuristics
-
-Filters (unchanged):
-- price > $5
-- last day $ volume > $20M
-- market cap > $1B (best effort via yfinance, cached)
-
-Outputs:
-- picks.json (payload with results)
-
-Cache:
-- data_cache/<TICKER>.pkl  (history)
-- data_cache/meta_<TICKER>.json (market cap)
+UPDATED: 精准底部起爆形态 (Bottom Reversal Breakout)
 """
 
 import os
@@ -62,13 +29,14 @@ HERE = os.path.dirname(__file__)
 CACHE_DIR = os.path.join(HERE, "data_cache")
 os.makedirs(CACHE_DIR, exist_ok=True)
 
-# Model parameters (updated per your request)
+# Model parameters (完美底部起爆逻辑)
 WINDOW_BARS = 500
-MIN_DROP_PCT = 40.0                 # from highest close to lowest close in window
-RECENT_NO_BREAK_LOW_BARS = 100      # last 100 bars cannot break window low
-EMA_CROSS_LOOKBACK = 150            # last 150 bars must have a cross up above EMA250
-EMA_DISTANCE_MAX_PCT = 30.0         # |close - EMA250| / EMA250 < 30%
-RECENT_HIGH_LOOKBACK = 120           # close must be below recent 90-day high
+MIN_DROP_PCT = 40.0                 # 过去500天最大跌幅 >= 40% (深坑)
+RECENT_NO_BREAK_LOW_BARS = 100      # 过去100天不能破500天的新低 (筑底横盘)
+EMA_CROSS_LOOKBACK = 150            # 过去150天内必须有过上穿EMA250的动作
+EMA_DISTANCE_MAX_PCT = 12.0         # 乖离率收紧到12%，拒绝涨到半山腰的票
+RECENT_HIGH_LOOKBACK = 120          # 必须低于近120天的最高点
+BOTTOM_STRUCTURE_MAX_PCT = 1.05     # 【灵魂条件】EMA120 不能超过 EMA250 的 5%
 
 # EMA lengths
 EMA20 = 20
@@ -122,13 +90,7 @@ def is_plausible_us_common_ticker(t: str) -> bool:
     return bool(re.match(r"^[A-Z0-9]{1,6}(-[A-Z0-9]{1,3})?$", t))
 
 def exclude_special_instruments(t: str) -> bool:
-    """
-    Best-effort exclusions: preferred/warrants/rights/units.
-    (You asked to exclude ETF/Preferred/Warrants/Rights/Units — ETFs should not be in holdings universe, but we keep this heuristic.)
-    """
     tt = t.upper()
-
-    # Preferred / warrants / rights / units
     if re.search(r"-P[A-Z]?$", tt):
         return True
     if re.search(r"-W(S)?$", tt):
@@ -137,7 +99,6 @@ def exclude_special_instruments(t: str) -> bool:
         return True
     if re.search(r"-U$", tt):
         return True
-
     return False
 
 def _suppress_yf_noise():
@@ -337,7 +298,7 @@ def scan_shape(ticker: str) -> Optional[Dict]:
     if close_last is None or vol_last is None:
         return None
 
-    # Basic filters (unchanged)
+    # Basic filters
     if close_last < MIN_PRICE:
         return None
     dollar_vol = close_last * vol_last
@@ -349,31 +310,30 @@ def scan_shape(ticker: str) -> Optional[Dict]:
     if len(df) < need:
         return None
 
-    # Market cap (unchanged; best effort)
+    # Market cap
     mc = get_marketcap_best_effort(ticker)
     if mc is not None and mc < MIN_MKTCAP:
         return None
 
-    # Compute EMAs on full df
+    # Compute EMAs
     ema20 = df["Close"].ewm(span=EMA20, adjust=False).mean()
     ema60 = df["Close"].ewm(span=EMA60, adjust=False).mean()
     ema120 = df["Close"].ewm(span=EMA120, adjust=False).mean()
     ema250 = df["Close"].ewm(span=EMA250, adjust=False).mean()
 
+    ema20_last = safe_float(ema20.iloc[-1])
     ema60_last = safe_float(ema60.iloc[-1])
     ema120_last = safe_float(ema120.iloc[-1])
     ema250_last = safe_float(ema250.iloc[-1])
-    if ema60_last is None or ema120_last is None or ema250_last is None or ema250_last <= 0:
+    if ema20_last is None or ema60_last is None or ema120_last is None or ema250_last is None or ema250_last <= 0:
         return None
 
     # -------------------------
-    # 5) 500-day window: drop >= 30% from highest close to lowest close
-    #    AND there exists a day where price simultaneously below EMA20/60/120/250
+    # 1) Window drop >= 40% (深坑确认)
     # -------------------------
     window = df.tail(WINDOW_BARS).copy()
-
-    w_high = safe_float(window["Close"].max())
-    w_low = safe_float(window["Close"].min())
+    w_high = safe_float(window["High"].max())
+    w_low = safe_float(window["Low"].min())
     if w_high is None or w_low is None or w_high <= 0:
         return None
 
@@ -381,45 +341,38 @@ def scan_shape(ticker: str) -> Optional[Dict]:
     if drop_pct < MIN_DROP_PCT:
         return None
 
-    # Condition: close simultaneously below all EMAs at least once in window
-    ema20_w = ema20.tail(WINDOW_BARS)
-    ema60_w = ema60.tail(WINDOW_BARS)
-    ema120_w = ema120.tail(WINDOW_BARS)
-    ema250_w = ema250.tail(WINDOW_BARS)
-
-    bear = (
-    (window["Close"] < ema20_w) &
-    (window["Close"] < ema60_w) &
-    (window["Close"] < ema120_w) &
-    (window["Close"] < ema250_w)
-)
-
-# NEW: 在500天窗口内，至少出现过连续5个交易日同时低于所有EMA
-    max_consecutive_bear = safe_float(bear.rolling(7).sum().max())
-    if max_consecutive_bear is None or max_consecutive_bear < 7:
-        return None
-
     # -------------------------
-    # 7) Last 100 bars cannot break the window low
+    # 2) 过去 100 天不能破 500 天的新低 (筑底阶段确认)
     # -------------------------
     recent100_min = safe_float(df.tail(RECENT_NO_BREAK_LOW_BARS)["Low"].min())
     if recent100_min is None:
         return None
-    if recent100_min < w_low:
+    if recent100_min <= w_low: 
         return None
 
     # -------------------------
-    # 9) Current price above EMA60/120/250
+    # 3) 当前价格必须站上所有均线 (突破确认)
     # -------------------------
-    if close_last <= ema60_last or close_last <= ema120_last or close_last <= ema250_last:
+    if close_last <= ema20_last or close_last <= ema60_last or close_last <= ema120_last or close_last <= ema250_last:
         return None
 
     # -------------------------
-    # 10) Last 150 bars must have a cross up above EMA250
+    # 4) 短期动能向上: 20日线必须高于60日线
+    # -------------------------
+    if ema20_last <= ema60_last:
+        return None
+
+    # -------------------------
+    # 5) 【灵魂条件】底部结构确认: EMA120 不能远超 EMA250 (过滤掉AAPL这类高位股)
+    # -------------------------
+    if ema120_last > ema250_last * BOTTOM_STRUCTURE_MAX_PCT:
+        return None
+
+    # -------------------------
+    # 6) 过去 150 天内必须有过上穿 EMA250 的动作
     # -------------------------
     recent = df.tail(EMA_CROSS_LOOKBACK)
     ema250_r = ema250.tail(EMA_CROSS_LOOKBACK)
-
     cross_up = (
         (recent["Close"].shift(1) < ema250_r.shift(1)) &
         (recent["Close"] > ema250_r)
@@ -428,22 +381,22 @@ def scan_shape(ticker: str) -> Optional[Dict]:
         return None
 
     # -------------------------
-    # 12) Distance to EMA250 < 30%
+    # 7) 当前价格距离 EMA250 乖离率 < 12% (防止追高，盈亏比极佳)
     # -------------------------
     dist_pct = abs(close_last - ema250_last) / ema250_last * 100.0
     if dist_pct > EMA_DISTANCE_MAX_PCT:
         return None
 
     # -------------------------
-    # 15) Current price BELOW recent 90-day high (no 90% threshold)
+    # 8) 当前价格必须低于近 120 天的最高点 (尚未加速拉升)
     # -------------------------
-    high120 = safe_float(df.tail(RECENT_HIGH_LOOKBACK)["Close"].max())
+    high120 = safe_float(df.tail(RECENT_HIGH_LOOKBACK)["High"].max())
     if high120 is None or high120 <= 0:
         return None
     if close_last >= high120:
         return None
 
-    # If passed all filters, return result
+    # 全部通过，返回结果
     return {
         "ticker": ticker,
         "close": round(close_last, 2),
@@ -485,11 +438,11 @@ def main():
             failed += 1
             continue
 
-    # Sort: closest to high90 first, then dollar volume
+    # Sort: closest to high120 first, then dollar volume (已修复原代码中的 high90 拼写 Bug)
     def sort_key(x: Dict) -> tuple:
-        high120 = x.get("high90") or 0
+        high120 = x.get("high120") or 0
         close = x.get("close") or 0
-        ratio = (close / high90) if high120 else 0
+        ratio = (close / high120) if high120 else 0
         return (ratio, x.get("dollar_vol", 0))
 
     results.sort(key=sort_key, reverse=True)
@@ -506,6 +459,7 @@ def main():
             "EMA_CROSS_LOOKBACK": EMA_CROSS_LOOKBACK,
             "EMA_DISTANCE_MAX_PCT": EMA_DISTANCE_MAX_PCT,
             "RECENT_HIGH_LOOKBACK": RECENT_HIGH_LOOKBACK,
+            "BOTTOM_STRUCTURE_MAX_PCT": BOTTOM_STRUCTURE_MAX_PCT,
             "MIN_PRICE": MIN_PRICE,
             "MIN_DOLLAR_VOL": MIN_DOLLAR_VOL,
             "MIN_MKTCAP": MIN_MKTCAP,
@@ -523,11 +477,6 @@ def main():
 
     print("Cache folder:", CACHE_DIR)
     
-import json
-from datetime import datetime
-import yfinance as yf
-import pandas as pd
-
 def build_sector_rs_json(out_path: str = "sectors.json",
                          lookback_points: int = 120,
                          rank_window: int = 5) -> None:

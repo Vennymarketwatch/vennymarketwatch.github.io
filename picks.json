@@ -1,7 +1,7 @@
 {
-  "updated_utc": "2026-03-20 23:31:06 UTC",
-  "universe_size": 2577,
-  "found": 72,
+  "updated_utc": "2026-03-23 02:28:25 UTC",
+  "universe_size": 2593,
+  "found": 71,
   "failed": 0,
   "params": {
     "WINDOW_BARS": 500,
@@ -153,18 +153,6 @@
       "ema250_dist_pct": 9.31,
       "dollar_vol": 33746812,
       "marketCap": 3229865472
-    },
-    {
-      "ticker": "TGNA",
-      "close": 20.79,
-      "high120": 21.35,
-      "drop500_pct": 42.15,
-      "ema60": 19.41,
-      "ema120": 19.3,
-      "ema250": 18.68,
-      "ema250_dist_pct": 11.27,
-      "dollar_vol": 46952138,
-      "marketCap": 3348370688
     },
     {
       "ticker": "OLN",

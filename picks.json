@@ -1,7 +1,7 @@
 {
-  "updated_utc": "2026-03-27 19:44:20 UTC",
+  "updated_utc": "2026-03-27 20:41:01 UTC",
   "universe_size": 2592,
-  "found": 71,
+  "found": 72,
   "failed": 0,
   "params": {
     "WINDOW_BARS": 500,
@@ -873,6 +873,18 @@
       "ema250_dist_pct": 3.89,
       "dollar_vol": 120841430,
       "marketCap": 16058791936
+    },
+    {
+      "ticker": "CVSA",
+      "close": 114.61,
+      "high120": 156.26,
+      "drop500_pct": 71.09,
+      "ema60": 106.14,
+      "ema120": 109.06,
+      "ema250": 108.9,
+      "ema250_dist_pct": 5.24,
+      "dollar_vol": 24557484,
+      "marketCap": 4163614976
     }
   ]
 }

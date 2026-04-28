@@ -1,7 +1,7 @@
 {
-  "updated_utc": "2026-04-28 14:20:11 UTC",
+  "updated_utc": "2026-04-28 16:53:35 UTC",
   "universe_size": 2585,
-  "found": 71,
+  "found": 72,
   "failed": 0,
   "params": {
     "WINDOW_BARS": 500,
@@ -873,6 +873,18 @@
       "ema250_dist_pct": 3.89,
       "dollar_vol": 120841430,
       "marketCap": 16058791936
+    },
+    {
+      "ticker": "P",
+      "close": 70.94,
+      "high120": 98.83,
+      "drop500_pct": 65.69,
+      "ema60": 66.84,
+      "ema120": 68.75,
+      "ema250": 67.68,
+      "ema250_dist_pct": 4.81,
+      "dollar_vol": 58772515,
+      "marketCap": 23442898944
     }
   ]
 }

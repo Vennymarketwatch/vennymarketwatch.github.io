@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-05-01 20:55:21 UTC",
+  "updated_utc": "2026-05-01 21:54:51 UTC",
   "universe_size": 2582,
   "found": 73,
   "failed": 0,
@@ -895,7 +895,7 @@
       "ema120": 68.87,
       "ema250": 67.77,
       "ema250_dist_pct": 5.69,
-      "dollar_vol": 72050510,
+      "dollar_vol": 93890958,
       "marketCap": 23667611648
     }
   ]

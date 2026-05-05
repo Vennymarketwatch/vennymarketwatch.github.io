@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-05-05 19:22:40 UTC",
+  "updated_utc": "2026-05-05 21:04:50 UTC",
   "universe_size": 2579,
   "found": 73,
   "failed": 0,
@@ -251,18 +251,6 @@
       "marketCap": 6756112384
     },
     {
-      "ticker": "CVSA",
-      "close": 119.17,
-      "high120": 124.6,
-      "drop500_pct": 60.55,
-      "ema60": 111.16,
-      "ema120": 111.09,
-      "ema250": 110.03,
-      "ema250_dist_pct": 8.3,
-      "dollar_vol": 22030272,
-      "marketCap": 4112208384
-    },
-    {
       "ticker": "T",
       "close": 28.47,
       "high120": 29.79,
@@ -345,6 +333,18 @@
       "ema250_dist_pct": 5.9,
       "dollar_vol": 37957440,
       "marketCap": 2856946176
+    },
+    {
+      "ticker": "CVSA",
+      "close": 118.07,
+      "high120": 124.6,
+      "drop500_pct": 60.55,
+      "ema60": 111.12,
+      "ema120": 111.07,
+      "ema250": 110.02,
+      "ema250_dist_pct": 7.31,
+      "dollar_vol": 30581192,
+      "marketCap": 4074421504
     },
     {
       "ticker": "SFBS",
@@ -888,15 +888,15 @@
     },
     {
       "ticker": "P",
-      "close": 75.27,
+      "close": 74.63,
       "high120": 96.5,
       "drop500_pct": 65.69,
-      "ema60": 67.69,
-      "ema120": 69.04,
-      "ema250": 67.87,
-      "ema250_dist_pct": 10.91,
-      "dollar_vol": 82703812,
-      "marketCap": 25001125888
+      "ema60": 67.67,
+      "ema120": 69.03,
+      "ema250": 67.86,
+      "ema250_dist_pct": 9.98,
+      "dollar_vol": 111952160,
+      "marketCap": 24788547584
     }
   ]
 }

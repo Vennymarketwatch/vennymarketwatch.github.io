@@ -1,7 +1,7 @@
 {
-  "updated_utc": "2026-05-07 16:52:00 UTC",
+  "updated_utc": "2026-05-07 18:26:00 UTC",
   "universe_size": 2577,
-  "found": 72,
+  "found": 73,
   "failed": 0,
   "params": {
     "WINDOW_BARS": 500,
@@ -309,6 +309,18 @@
       "ema250_dist_pct": 7.3,
       "dollar_vol": 26999604,
       "marketCap": 5051489792
+    },
+    {
+      "ticker": "CVSA",
+      "close": 118.7,
+      "high120": 124.6,
+      "drop500_pct": 60.14,
+      "ema60": 111.5,
+      "ema120": 111.27,
+      "ema250": 110.13,
+      "ema250_dist_pct": 7.78,
+      "dollar_vol": 20032167,
+      "marketCap": 4096161792
     },
     {
       "ticker": "HGV",
@@ -876,15 +888,15 @@
     },
     {
       "ticker": "P",
-      "close": 75.76,
+      "close": 74.71,
       "high120": 96.5,
       "drop500_pct": 65.69,
-      "ema60": 68.15,
-      "ema120": 69.22,
-      "ema250": 67.98,
-      "ema250_dist_pct": 11.45,
-      "dollar_vol": 126788530,
-      "marketCap": 25163882496
+      "ema60": 68.11,
+      "ema120": 69.21,
+      "ema250": 67.97,
+      "ema250_dist_pct": 9.92,
+      "dollar_vol": 148423590,
+      "marketCap": 24815120384
     }
   ]
 }

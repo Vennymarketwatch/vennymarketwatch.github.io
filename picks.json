@@ -1,7 +1,7 @@
 {
-  "updated_utc": "2026-05-07 11:48:59 UTC",
+  "updated_utc": "2026-05-07 14:13:10 UTC",
   "universe_size": 2577,
-  "found": 73,
+  "found": 72,
   "failed": 0,
   "params": {
     "WINDOW_BARS": 500,
@@ -551,18 +551,6 @@
       "marketCap": 29623980032
     },
     {
-      "ticker": "CVSA",
-      "close": 115.31,
-      "high120": 124.6,
-      "drop500_pct": 60.55,
-      "ema60": 111.26,
-      "ema120": 111.14,
-      "ema250": 110.06,
-      "ema250_dist_pct": 4.77,
-      "dollar_vol": 27512965,
-      "marketCap": 3979177728
-    },
-    {
       "ticker": "COO",
       "close": 83.05,
       "high120": 89.83,
@@ -888,15 +876,15 @@
     },
     {
       "ticker": "P",
-      "close": 74.43,
+      "close": 75.0,
       "high120": 96.5,
       "drop500_pct": 65.69,
-      "ema60": 67.89,
-      "ema120": 69.11,
-      "ema250": 67.91,
-      "ema250_dist_pct": 9.6,
-      "dollar_vol": 191508390,
-      "marketCap": 24722118656
+      "ema60": 68.12,
+      "ema120": 69.21,
+      "ema250": 67.97,
+      "ema250_dist_pct": 10.34,
+      "dollar_vol": 30481275,
+      "marketCap": 24911446016
     }
   ]
 }

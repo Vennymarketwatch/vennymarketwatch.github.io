@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-05-07 18:26:00 UTC",
+  "updated_utc": "2026-05-07 20:15:41 UTC",
   "universe_size": 2577,
   "found": 73,
   "failed": 0,
@@ -311,18 +311,6 @@
       "marketCap": 5051489792
     },
     {
-      "ticker": "CVSA",
-      "close": 118.7,
-      "high120": 124.6,
-      "drop500_pct": 60.14,
-      "ema60": 111.5,
-      "ema120": 111.27,
-      "ema250": 110.13,
-      "ema250_dist_pct": 7.78,
-      "dollar_vol": 20032167,
-      "marketCap": 4096161792
-    },
-    {
       "ticker": "HGV",
       "close": 46.4,
       "high120": 48.71,
@@ -453,6 +441,18 @@
       "ema250_dist_pct": 8.73,
       "dollar_vol": 43961996,
       "marketCap": 2614924544
+    },
+    {
+      "ticker": "CVSA",
+      "close": 117.0,
+      "high120": 124.6,
+      "drop500_pct": 60.14,
+      "ema60": 111.44,
+      "ema120": 111.24,
+      "ema250": 110.12,
+      "ema250_dist_pct": 6.25,
+      "dollar_vol": 44337969,
+      "marketCap": 4037497344
     },
     {
       "ticker": "BANR",
@@ -888,15 +888,15 @@
     },
     {
       "ticker": "P",
-      "close": 74.71,
+      "close": 76.05,
       "high120": 96.5,
       "drop500_pct": 65.69,
-      "ema60": 68.11,
-      "ema120": 69.21,
-      "ema250": 67.97,
-      "ema250_dist_pct": 9.92,
-      "dollar_vol": 148423590,
-      "marketCap": 24815120384
+      "ema60": 68.16,
+      "ema120": 69.23,
+      "ema250": 67.98,
+      "ema250_dist_pct": 11.88,
+      "dollar_vol": 227147822,
+      "marketCap": 25260206080
     }
   ]
 }

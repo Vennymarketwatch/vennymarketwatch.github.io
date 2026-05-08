@@ -1,7 +1,7 @@
 {
-  "updated_utc": "2026-05-08 11:18:21 UTC",
-  "universe_size": 2577,
-  "found": 73,
+  "updated_utc": "2026-05-08 13:52:03 UTC",
+  "universe_size": 2576,
+  "found": 71,
   "failed": 0,
   "params": {
     "WINDOW_BARS": 500,
@@ -443,18 +443,6 @@
       "marketCap": 2614924544
     },
     {
-      "ticker": "CVSA",
-      "close": 117.0,
-      "high120": 124.6,
-      "drop500_pct": 60.14,
-      "ema60": 111.44,
-      "ema120": 111.24,
-      "ema250": 110.12,
-      "ema250_dist_pct": 6.25,
-      "dollar_vol": 44811000,
-      "marketCap": 4037497344
-    },
-    {
       "ticker": "BANR",
       "close": 64.71,
       "high120": 68.97,
@@ -885,18 +873,6 @@
       "ema250_dist_pct": 3.89,
       "dollar_vol": 120841430,
       "marketCap": 16058791936
-    },
-    {
-      "ticker": "P",
-      "close": 76.05,
-      "high120": 96.5,
-      "drop500_pct": 65.69,
-      "ema60": 68.16,
-      "ema120": 69.23,
-      "ema250": 67.98,
-      "ema250_dist_pct": 11.88,
-      "dollar_vol": 241291449,
-      "marketCap": 25260206080
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
-  "updated_utc": "2026-05-15 19:40:51 UTC",
+  "updated_utc": "2026-05-15 21:03:29 UTC",
   "universe_size": 2570,
-  "found": 70,
+  "found": 71,
   "failed": 0,
   "params": {
     "WINDOW_BARS": 500,
@@ -573,6 +573,18 @@
       "ema250_dist_pct": 3.24,
       "dollar_vol": 240022497,
       "marketCap": 10831790080
+    },
+    {
+      "ticker": "CVSA",
+      "close": 122.93,
+      "high120": 133.74,
+      "drop500_pct": 60.14,
+      "ema60": 114.49,
+      "ema120": 112.87,
+      "ema250": 110.98,
+      "ema250_dist_pct": 10.77,
+      "dollar_vol": 26333572,
+      "marketCap": 4183417088
     },
     {
       "ticker": "XENE",

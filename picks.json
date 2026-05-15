@@ -1,7 +1,7 @@
 {
-  "updated_utc": "2026-05-15 10:25:51 UTC",
-  "universe_size": 2572,
-  "found": 71,
+  "updated_utc": "2026-05-15 12:54:52 UTC",
+  "universe_size": 2570,
+  "found": 70,
   "failed": 0,
   "params": {
     "WINDOW_BARS": 500,
@@ -141,18 +141,6 @@
       "ema250_dist_pct": 9.68,
       "dollar_vol": 42416638,
       "marketCap": 3900271104
-    },
-    {
-      "ticker": "TPH",
-      "close": 36.91,
-      "high120": 37.52,
-      "drop500_pct": 41.61,
-      "ema60": 33.77,
-      "ema120": 33.46,
-      "ema250": 33.77,
-      "ema250_dist_pct": 9.31,
-      "dollar_vol": 33746812,
-      "marketCap": 3229865472
     },
     {
       "ticker": "OLN",
